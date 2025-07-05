@@ -16,6 +16,7 @@ import Progress from './screens/Progress'
 import Profile from './screens/Profile'
 import AddExercise from './screens/AddExercise' 
 import MyWorkout from './screens/MyWorkout' 
+import ViewWorkout from './screens/ViewWorkout' 
 import {Provider} from "react-redux";
 import {store} from './store/store'
 
@@ -81,6 +82,11 @@ export default function App() {
         <Stack.Screen 
           name="MyWorkout" 
           component={MyWorkout} 
+          options={{ headerShown: false,animation: 'none' }}
+        />
+        <Stack.Screen 
+          name="ViewWorkout" 
+          component={ViewWorkout} 
           options={{ headerShown: false,animation: 'none' }}
         />
       </Stack.Navigator>

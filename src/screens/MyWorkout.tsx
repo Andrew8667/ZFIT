@@ -25,10 +25,8 @@ type workoutType = {
   
   const MyWorkout = function MyWorkout({ navigation }: { navigation: any }) {
     const dispatch = useDispatch();
-    const [addExerciseSet,setAddExerciseSet] = useState('');
     const workout = useSelector((state:RootState)=>state.workout);
     const exercises: exerciseType[] = workout.exercises;
-
     //handles finish button
     async function addToWorkout(inProgress:boolean){
         const { data, error } = await supabase
