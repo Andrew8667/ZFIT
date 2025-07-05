@@ -2,25 +2,91 @@ import { StyleSheet,ScrollView,View, Text, FlatList,Button,SafeAreaView,Alert,Im
 import Background from '../components/Background';
 import Title from '../components/Title';
 import {useSelector,useDispatch} from 'react-redux'
-import {addSet,addExercise,deleteSet,removeExercise, updateLbs} from '../store/workoutSlice'
+import {addSet,clearWorkout,updateTitle,updateReps,addExercise,deleteSet,removeExercise, updateLbs} from '../store/workoutSlice'
 import type RootState from '../store/store'
 import {useState} from 'react'
+import { supabase } from '../lib/supabase';
 
+type setsType={
+    setNum:number,
+    lbs:number,
+    reps:number
+}
 
-type Item = {
-    name: string;
-    sets: any[];
+type exerciseType={
+    name:string,
+    sets:setsType[]
+}
+
+type workoutType = {
+    title:string,
+    exercises: exerciseType[],
 };
   
-  
   const MyWorkout = function MyWorkout({ navigation }: { navigation: any }) {
-    const items = useSelector((state: RootState) => state.workout) as Item[];
     const dispatch = useDispatch();
     const [addExerciseSet,setAddExerciseSet] = useState('');
-    const workouts = useSelector((state:RootState)=>state.workout);
+    const workout = useSelector((state:RootState)=>state.workout);
+    const exercises: exerciseType[] = workout.exercises;
 
-    const keyExtractor = (item: Item, index: number) => index.toString();
-    const renderItem = ({ item }: { item: Item }) => (
+    //handles finish button
+    async function addToWorkout(inProgress:boolean){
+        const { data, error } = await supabase
+            .from('workout')
+            .insert({title:workout.title,in_progress:inProgress})
+            .select()
+            .single()
+        if(error){
+            console.log('Error inserting into workout table', error)
+        }
+        return data
+    }
+    async function addToSet(inProgress:boolean){
+        const data = await addToWorkout(inProgress);
+        const sets = []
+        for(let i = 0 ; i < exercises.length;i++){
+            for(let j = 0 ; j < exercises[i].sets.length; j++){
+                sets.push({exercise:exercises[i].name,set_num:exercises[i].sets[j].setNum,lbs:exercises[i].sets[j].lbs,reps:exercises[i].sets[j].reps,id:data.id})
+            }
+        }
+        const { error } = await supabase
+            .from('set')
+            .insert(sets)
+        if(error){
+            console.log('Error inserting into sets table', error)
+        }
+    }
+    const finishWorkout = ()=>{
+        addToSet(false);
+        dispatch(clearWorkout(''));
+        navigation.navigate('Create')
+    }
+
+    //deal with return
+    //click return popup asking if they want to save workout
+    const returnAction = ()=>{
+        Alert.alert('Do you want to save your current workout to continue later?','',[
+            {
+                text:'No',
+                onPress: ()=>{
+                    dispatch(clearWorkout(''));
+                    navigation.navigate('Create');
+                },
+                style:'cancel'
+            },
+            {
+                text:'Yes',
+                onPress: async ()=>{
+                    await addToSet(true);
+                    dispatch(clearWorkout(''));
+                    navigation.navigate('Create');
+                }
+            }
+        ])
+    }
+
+    const keyExtractor = (item: exerciseType, index: number) => index.toString();
+    const renderItem = ({ item }: { item: exerciseType }) => (
         <View style={styles.exerciseContainer}>
             <Text style={styles.exerciseName}>{item.name.toUpperCase()}</Text>
             <View style={styles.exerciseLabelContainer}>
@@ -37,9 +103,14 @@ type Item = {
                             style={styles.setInfo}
 
                             onChangeText={(value) => dispatch(updateLbs(item.name+','+set.setNum+','+value))}
-                            value={workouts.find((workout:Item)=>workout.name===item.name)?.sets.filter((aSet:{setNum:number,lbs:number,reps:number})=>aSet.setNum===set.setNum)[0].lbs.toString()}
+                            value={exercises.find(exercise=>exercise.name===item.name)?.sets.filter((aSet:{setNum:number,lbs:number,reps:number})=>aSet.setNum===set.setNum)[0].lbs.toString()}
                         />
-                        <TextInput style={styles.setInfo} value='0'></TextInput>
+                        <TextInput
+                            style={styles.setInfo}
+
+                            onChangeText={(value) => dispatch(updateReps(item.name+','+set.setNum+','+value))}
+                            value={exercises.find(exercise=>exercise.name===item.name)?.sets.filter((aSet:{setNum:number,lbs:number,reps:number})=>aSet.setNum===set.setNum)[0].reps.toString()}
+                        />
                         <TouchableOpacity style={styles.deleteBtn} onPress={()=>dispatch(deleteSet(item.name + ',' + set.setNum))}>
                             <Text style={styles.deleteBtnTxt}>Delete</Text>
                         </TouchableOpacity>
@@ -61,25 +132,27 @@ type Item = {
       <SafeAreaView style={styles.container}>
         <View style={styles.topElementsContainer}>
           <Text style={styles.title}>My Workout</Text>
-          <TouchableOpacity style={styles.finishBtn}>
+          <TouchableOpacity onPress={finishWorkout} style={styles.finishBtn}>
             <Text style={styles.finishBtnText}>Finish</Text>
           </TouchableOpacity>
         </View>
-  
+        <View style={styles.workoutTitleContainer}>
+            <TextInput style={styles.workoutTitle} value={workout.title} onChangeText={(newTitle)=>dispatch(updateTitle(newTitle))} placeholder="Workout Title"></TextInput>
+        </View>
         <FlatList
             style={styles.flatList}
-            data={items}
+            data={workout.exercises}
             keyExtractor={keyExtractor}
-            renderItem={renderItem}
+            renderItem={renderItem}    
         />
   
         <View style={styles.bottomButtons}>
-          <TouchableOpacity onPress={() => navigation.navigate('AddExercise')} style={styles.addExerciseBtn}>
-            <Text style={styles.addExerciseBtnText}>Add Exercise</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.cancelWorkoutBtn}>
-            <Text style={styles.cancelWorkoutBtnText}>Cancel Workout</Text>
-          </TouchableOpacity>
+            <TouchableOpacity onPress={returnAction} style={styles.returnBtn}>
+                <Text style={styles.returnBtnText}>Return</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => navigation.navigate('AddExercise')} style={styles.addExerciseBtn}>
+                <Text style={styles.addExerciseBtnText}>Add Exercise</Text>
+            </TouchableOpacity>
         </View>
       </SafeAreaView>
     );
@@ -125,7 +198,7 @@ const styles = StyleSheet.create({
         position:'absolute',
         top:'97%'
     },
-    cancelWorkoutBtn:{
+    returnBtn:{
         borderRadius:5,
         backgroundColor:'#FFEDEF',
         width:175,
@@ -141,7 +214,7 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         alignItems:'center',
     },
-    cancelWorkoutBtnText:{
+    returnBtnText:{
         fontFamily:'Inter',
         fontWeight:500,
         fontSize:16,
@@ -250,6 +323,21 @@ const styles = StyleSheet.create({
         color:'#000000',
         width:'auto'
     },
+    workoutTitleContainer:{
+        backgroundColor:'#EAEAEA',
+        height:25,
+        marginTop:20,
+        marginLeft:20,
+        width:'50%',
+        borderRadius:10,
+        justifyContent:'center',
+        alignItems:'flex-start',
+    },
+    workoutTitle:{
+        width:'100%',
+        height:'100%',
+        marginLeft:10
+    }
 });
 
 export default MyWorkout;

@@ -16,9 +16,14 @@ const Login = function Login({navigation}:{navigation:any}){
           email: email,
           password: password,
         })
-        if (error) Alert.alert(error.message)
+        if (error){
+            Alert.alert(error.message)
+        } else {
+            navigation.navigate("Home")
+        }
+            
         setLoading(false)
-        navigation.navigate("Home")
+        
       }
 
     return(
