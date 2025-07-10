@@ -1,13 +1,14 @@
 import { StyleSheet,ScrollView,View, Text, FlatList,Button,SafeAreaView,Alert,Image, TextInput,TouchableOpacity } from 'react-native'
-import Background from '../components/Background';
-import Title from '../components/Title';
 import {useSelector,useDispatch} from 'react-redux'
 import {addSet,clearWorkout,updateTitle,updateReps,addExercise,deleteSet,removeExercise, updateLbs} from '../store/workoutSlice'
 import type RootState from '../store/store'
 import {useState} from 'react'
 import { supabase } from '../lib/supabase';
+import Background from '../components/Background';
+import CustomText from '../components/CustomText';
+import CustomButton from '../components/CustomButton';
 
-type setsType={
+/*type setsType={
     setNum:number,
     lbs:number,
     reps:number
@@ -336,6 +337,42 @@ const styles = StyleSheet.create({
         height:'100%',
         marginLeft:10
     }
-});
+});*/
+
+const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
+    return(
+        <Background>
+            <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
+            <View style={styles.bottomBtnContainer}>
+                <CustomButton text='Return'
+                extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10}}
+                extraTxtDesign={{fontWeight:700,fontSize:14}}
+                action={()=>{navigation.navigate('Create')}}
+                ></CustomButton>
+                <CustomButton text='Add Exercise'
+                extraBtnDesign={{backgroundColor:'#FFFFFF',width:120,height:35,borderRadius:10}}
+                extraTxtDesign={{fontWeight:700,fontSize:14, color:'#696969'}}
+                action={()=>{navigation.navigate('AddExercise')}}
+                ></CustomButton>
+                <CustomButton text='Finish'
+                extraBtnDesign={{backgroundColor:'#4caf50',width:120,height:35,borderRadius:10}}
+                extraTxtDesign={{fontWeight:700,fontSize:14}}
+                action={()=>{navigation.navigate('Create')}}
+                ></CustomButton>
+            </View>
+        </Background>
+    )
+}
+
+const styles = StyleSheet.create({
+    bottomBtnContainer:{
+        flexDirection:'row',
+        justifyContent:'space-evenly',
+        alignItems:'center',
+        position:'absolute',
+        width:'100%',
+        marginTop: 830,
+    }
+})
 
 export default MyWorkout;

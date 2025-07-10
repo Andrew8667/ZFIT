@@ -26,23 +26,7 @@ const Progress = function Progress({navigation}:{navigation:any}){
     return(
         <SafeAreaView style={styles.container}>
             <Text style={styles.title}>Progress</Text>
-            <View style={styles.navContainer}>
-                <TouchableOpacity onPress={()=>{redirect('Home')}}>
-                    <Image source={require('../../assets/Home.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Archives')}}>   
-                    <Image source={require('../../assets/Archives.png')}></Image>
-                </TouchableOpacity >
-                <TouchableOpacity onPress={()=>{redirect('Create')}}>
-                    <Image source={require('../../assets/Create.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Progress')}}>   
-                    <Image source={require('../../assets/BlueProgress.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Profile')}}>
-                    <Image source={require('../../assets/Profile.png')}></Image>
-                </TouchableOpacity>
-            </View>
+            
         </SafeAreaView>
     );
 }

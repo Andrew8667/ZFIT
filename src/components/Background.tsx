@@ -1,21 +1,34 @@
-import { StyleSheet, View, Text, SafeAreaView } from 'react-native'
+import { StyleSheet, View, Text, SafeAreaView,ViewStyle} from 'react-native'
+import { LinearGradient } from 'expo-linear-gradient'; //Used for filling in background with gradient
 import { ReactNode } from 'react';
 
-const Background = function Background({children}:{children:ReactNode}){
+/**
+ * Component used for the background of every screen
+ * @param param0 consists of children and extra style
+ * -children will be the react nodes in the screen
+ * -extra style allows for optional customization of background outside the component
+ * @returns 
+ */
+const Background = function Background({children,extraStyle}:{children:ReactNode,extraStyle?:ViewStyle}){
     return(
-        <SafeAreaView style={styles.container}>
-            {children}
-        </SafeAreaView>
+        <LinearGradient
+            colors = {['#1E89DD','#E9F5FE']}
+            start = {{x:0,y:0}}
+            end = {{x:1,y:1}}
+            style = {styles.color}>
+                <SafeAreaView style = {[styles.container,extraStyle]}>
+                    {children}
+                </SafeAreaView>
+        </LinearGradient>
     );
 }
 
 const styles = StyleSheet.create({
-    container:{
-        backgroundColor:"#FFFFFF",
+    container:{ //styling for the screen
         flex:1,
-        height:'100%',
-        width:'100%',
-        alignItems:'center'
+    },
+    color:{ //styling for the gradient
+        flex:1
     }
 });
 

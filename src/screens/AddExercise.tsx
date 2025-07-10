@@ -2,12 +2,22 @@ import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,B
 import { supabase} from '../lib/supabase'; // adjust path as needed
 import {useState, useEffect} from 'react'
 import { Session } from '@supabase/supabase-js';
-import Title from '../components/Title'
-import Background from '../components/Background'
 import { ListItem } from '@rneui/base';
 import {useDispatch} from 'react-redux'
 import {addExercise,addSet,deleteSet} from '../store/workoutSlice'
+import Background from '../components/Background';
+import CustomButton from '../components/CustomButton';
+import CustomText from '../components/CustomText';
+import { fetchData } from '../api/exercises';
+import Search from '../components/Search'
+import {exercise} from '../types/exercise'
+import ExerciseFlatlist from '../components/ExerciseFlatlist';
+import CustomModal from '../components/CustomModal';
+import ExerciseInfo from '../components/ExerciseInfo';
+import ExerciseFilter from '../components/ExerciseFilter';
+import { getLevels,getEquipment,getMuscles } from '../utils/workoutHelpers';
 
+/*
 const AddExercise = function AddExercise({navigation}:{navigation:any}){
     const [exerciseList,setExerciseList] = useState<Exercise[]>([]);
     const [filteredExerciseList,setFilteredExerciseList] = useState<Exercise[]>([]);
@@ -70,9 +80,7 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
                 <TextInput style={styles.textInput} placeholder='Exercise Name' placeholderTextColor={'#A7AAB4'} 
                 onChangeText={(newValue) => {setSearchItem(newValue)}}>                  
                 </TextInput>
-                <TouchableOpacity style={styles.filter}>
-                    <Image source={require('../../assets/Filter_alt.png')}></Image>
-                </TouchableOpacity>
+
             </View>
             <Modal animationType="fade" transparent={true} visible={modalVisible}>
                 <View style={styles.modalBackdrop}>
@@ -209,6 +217,65 @@ const styles = StyleSheet.create({
     moreInfoText:{
         fontFamily:'Inter',
         fontSize:14,
+    },
+});*/
+
+const AddExercise = function AddExercise({navigation}:{navigation:any}){
+    const [exerciseList,setExerciseList] = useState<exercise[]>([]); //list of exercises
+    const [searchText,setSearchText] = useState('');
+    const [exerciseModalVisible,setExerciseModalVisible] = useState(false);
+    const [filterModalVisible,setFilterModalVisible] = useState(false);
+    const [viewExercise,setViewExercise] = useState<exercise|undefined>(undefined)
+    const [selectedLevel,setSelectedLevel] = useState('')
+    const [selectedEquipment,setSelectedEquipment] = useState('')
+    const [selectedMuscle,setSelectedMuscle] = useState('')
+
+    useEffect(()=>{ //populates the exercise list when screen loads
+        async function loadData(){
+            await fetchData(setExerciseList)
+        }
+        loadData()
+    },[])
+
+    return(
+        <Background>
+            <CustomText text="Add Exercise"
+            textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
+            <Search setSearchText={setSearchText} action={()=>setFilterModalVisible(true)}></Search>
+            <ExerciseFlatlist exerciseList={exerciseList.filter(exercise=>exercise.name.trim().toLowerCase().includes(searchText.toLowerCase().trim())
+                && (exercise.primaryMuscles[0].includes(selectedMuscle))
+                && (exercise.level.includes(selectedLevel))
+                && (exercise.equipment !== null && (exercise.equipment.includes(selectedEquipment)))
+            )}
+            setViewExercise={setViewExercise}
+            setModalVisible={setExerciseModalVisible}></ExerciseFlatlist>
+            <View style={styles.returnBtnContainer}>
+                <CustomButton text='Return'
+                    extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10,marginTop:50}}
+                    extraTxtDesign={{fontWeight:700,fontSize:14}}
+                    action={()=>{navigation.navigate('MyWorkout')}}
+                ></CustomButton>
+            </View>
+            <CustomModal modalVisible={exerciseModalVisible} setModalVisible={setExerciseModalVisible}>
+                <ExerciseInfo setExerciseModalVisible={setExerciseModalVisible} exercise={viewExercise}></ExerciseInfo>
+            </CustomModal>
+            <CustomModal modalVisible={filterModalVisible} setModalVisible={setFilterModalVisible}>
+                <ExerciseFilter levels={getLevels(exerciseList)} selectedLevel={selectedLevel} setSelectedLevel={setSelectedLevel} 
+                equipment={getEquipment(exerciseList)} selectedEquipment={selectedEquipment} setSelectedEquipment={setSelectedEquipment}
+                muscles={getMuscles(exerciseList)} selectedMuscle={selectedMuscle} setSelectedMuscle={setSelectedMuscle}
+                setFilterModalVisible={setFilterModalVisible}></ExerciseFilter>
+            </CustomModal>
+        </Background>
+    )
+}
+
+const styles = StyleSheet.create({
+    returnBtnContainer:{
+        width:'100%',
+        alignItems:'center',
+        justifyContent:'center',
+        position:'absolute',
+        marginTop:830
     },
 });
 

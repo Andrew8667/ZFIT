@@ -4,7 +4,6 @@ import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import { supabase } from './lib/supabase'
-import Auth from './components/Auth'
 import { View, Text } from 'react-native'
 import { Session } from '@supabase/supabase-js'
 import Login from './screens/Login'
@@ -22,6 +21,10 @@ import {store} from './store/store'
 
 const Stack = createNativeStackNavigator();
 
+/**
+ * Contains the navigation and keeps track of the session for the entire app 
+ * @returns navigation for the screens throughout the app
+ */
 export default function App() {
   const [session, setSession] = useState<Session | null>(null)
 
@@ -38,7 +41,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-      <Stack.Navigator initialRouteName="Login">
+        <Stack.Navigator initialRouteName="AddExercise">
         <Stack.Screen
           name="Login"
           component={Login}

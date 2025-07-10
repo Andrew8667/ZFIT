@@ -198,23 +198,7 @@ const Archives = function Archives({navigation}:{navigation:any}){
             <View style={{height:'80%'}}>
                 <FlatList data = {finishedWorkouts} renderItem={renderItem} keyExtractor={keyExtractor}></FlatList>
             </View>
-            <View style={styles.navContainer}>
-                <TouchableOpacity onPress={()=>{redirect('Home')}}>
-                    <Image source={require('../../assets/Home.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Archives')}}>   
-                    <Image source={require('../../assets/BlueArchives.png')}></Image>
-                </TouchableOpacity >
-                <TouchableOpacity onPress={()=>{redirect('Create')}}>
-                    <Image source={require('../../assets/Create.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Progress')}}>   
-                    <Image source={require('../../assets/Progress.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Profile')}}>
-                    <Image source={require('../../assets/Profile.png')}></Image>
-                </TouchableOpacity>
-            </View>
+            
         </SafeAreaView>
     );
 }

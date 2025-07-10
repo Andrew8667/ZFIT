@@ -4,8 +4,12 @@ import React, {useState, useEffect} from 'react'
 import {populateWorkout} from '../store/workoutSlice'
 import { Session } from '@supabase/supabase-js';
 import {useSelector,useDispatch} from 'react-redux'
+import NavBar from '../components/NavBar'
+import Background from '../components/Background'
+import CustomText from '../components/CustomText';
+import CustomButton from '../components/CustomButton';
 
-const Create = function Create({navigation}:{navigation:any}){ 
+/*const Create = function Create({navigation}:{navigation:any}){ 
     const [inProgressList, setInProgressList] = useState<workoutDetails[]>([]);
     const dispatch = useDispatch();
     //navigate to different pages
@@ -120,23 +124,7 @@ const Create = function Create({navigation}:{navigation:any}){
                     <FlatList contentContainerStyle={styles.flatList} data={inProgressList} keyExtractor={keyExtractor} renderItem={renderItem} horizontal={true}></FlatList>
                 </View>
             </View>
-            <View style={styles.navContainer}>
-                <TouchableOpacity onPress={()=>{redirect('Home')}}>
-                    <Image source={require('../../assets/Home.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Archives')}}>   
-                    <Image source={require('../../assets/Archives.png')}></Image>
-                </TouchableOpacity >
-                <TouchableOpacity onPress={()=>{redirect('Create')}}>
-                    <Image source={require('../../assets/BlueCreate.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Progress')}}>   
-                    <Image source={require('../../assets/Progress.png')}></Image>
-                </TouchableOpacity>
-                <TouchableOpacity onPress={()=>{redirect('Profile')}}>
-                    <Image source={require('../../assets/Profile.png')}></Image>
-                </TouchableOpacity>
-            </View>
+            
         </SafeAreaView>
     );
 }
@@ -227,6 +215,18 @@ const styles = StyleSheet.create({
         fontWeight:500,
         fontSize:16
     }
-});
+});*/
+const Create = function Create({navigation}:{navigation:any}){
+    return(
+        <Background>
+            <CustomText text='Create' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
+            <CustomButton text='Create New Workout' 
+            extraBtnDesign={{backgroundColor:'#f57c00',width:200,height:50,borderRadius:10,alignSelf:'center',marginTop:42}}
+            extraTxtDesign={{fontSize:14,fontWeight:500}}
+            action={()=>navigation.navigate('MyWorkout')}></CustomButton>
+            <NavBar navigation={navigation} curScreen='create'></NavBar>
+        </Background>
+    )
+}
 
 export default Create;
