@@ -3,6 +3,12 @@ import { exercise } from '../types/exercise';
 import CustomText from './CustomText';
 import CustomButton from './CustomButton';
 
+/**
+ * Displays the extra info of each exercise
+ * @param param0 exercise is the current exercise that what pressed
+ * -setExerciseModalVisible allows us to control whether this component is shown or not
+ * @returns a screen with blurred background and a box in middle with extra workout info
+ */
 const ExerciseInfo = function ExerciseInfo({exercise,setExerciseModalVisible}:{exercise:any,setExerciseModalVisible:(input:boolean)=>void}){
     return(
         <View style={styles.backdrop}>

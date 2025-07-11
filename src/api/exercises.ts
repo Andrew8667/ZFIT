@@ -1,16 +1,10 @@
-type exercise = { //structure of exercise in the list
-    name:string,
-    force:string,
-    level:string,
-    mechanic:string,
-    equipment:string,
-    primaryMuscles:string[],
-    secondaryMuscles:string[],
-    instructions:string[],
-    category:string,
-    images:string[],
-    id:string
-}
+import { exercise } from "../types/exercise";
+
+/**
+ * Method obtains the exercise information from public api
+ * contains hundreds of exercises
+ * @param setExerciseList method used for populating exerciseList variable other files
+ */
 export async function fetchData(setExerciseList:(exercises:exercise[])=>void){
     try{
         const response = await fetch('https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json');

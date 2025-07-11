@@ -2,6 +2,14 @@ import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,B
 import {exercise} from '../types/exercise'
 import CustomText from './CustomText'
 
+/**
+ * Boxes containing info in the exercise flatlist
+ * Can press on each box and view more info
+ * @param param0 contains item which is an exercise in the exercise list
+ * -setViewExercise which allows us to set which exercise is clicked
+ * -setModalVisible to control when the extra exercise info is shown
+ * @returns clickable flatlist item containing exercise info 
+ */
 const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void})=>{
     return(
     <TouchableOpacity style={styles.container} onPress={()=>{
@@ -20,8 +28,17 @@ const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setV
     </TouchableOpacity>
     )
 }
+
+//assigns each exercise a key
 const keyExtractor = (item: exercise) => item.id;
 
+/**
+ * Flatlist containing exercise item components
+ * @param param0 a list of exercises from the api
+ * -setViewExercise used to keep track of which item in flatlist is pressed
+ * -setModalVisible used to see if the exercise modal is shown or not
+ * @returns a flatlist contain
+ */
 const ExerciseFlatlist = function ExerciseFlatlist({exerciseList,setViewExercise,setModalVisible}:{exerciseList:exercise[],setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void}){
     return(
         <FlatList

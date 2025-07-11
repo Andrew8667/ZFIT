@@ -15,7 +15,7 @@ import ExerciseFlatlist from '../components/ExerciseFlatlist';
 import CustomModal from '../components/CustomModal';
 import ExerciseInfo from '../components/ExerciseInfo';
 import ExerciseFilter from '../components/ExerciseFilter';
-import { getLevels,getEquipment,getMuscles } from '../utils/workoutHelpers';
+import { getLevels,getEquipment,getMuscles,getCategories,getForces } from '../utils/workoutHelpers';
 
 /*
 const AddExercise = function AddExercise({navigation}:{navigation:any}){
@@ -229,6 +229,8 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
     const [selectedLevel,setSelectedLevel] = useState('')
     const [selectedEquipment,setSelectedEquipment] = useState('')
     const [selectedMuscle,setSelectedMuscle] = useState('')
+    const [selectedCategory,setSelectedCategory] = useState('')
+    const [selectedForce,setSelectedForce] = useState('')
 
     useEffect(()=>{ //populates the exercise list when screen loads
         async function loadData(){
@@ -241,11 +243,13 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
         <Background>
             <CustomText text="Add Exercise"
             textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
-            <Search setSearchText={setSearchText} action={()=>setFilterModalVisible(true)}></Search>
+            <Search setSearchText={setSearchText} action={setFilterModalVisible}></Search>
             <ExerciseFlatlist exerciseList={exerciseList.filter(exercise=>exercise.name.trim().toLowerCase().includes(searchText.toLowerCase().trim())
                 && (exercise.primaryMuscles[0].includes(selectedMuscle))
                 && (exercise.level.includes(selectedLevel))
                 && (exercise.equipment !== null && (exercise.equipment.includes(selectedEquipment)))
+                && (exercise.category.includes(selectedCategory))
+                && (exercise.force !== null && (exercise.force.includes(selectedForce)))
             )}
             setViewExercise={setViewExercise}
             setModalVisible={setExerciseModalVisible}></ExerciseFlatlist>
@@ -256,13 +260,15 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
                     action={()=>{navigation.navigate('MyWorkout')}}
                 ></CustomButton>
             </View>
-            <CustomModal modalVisible={exerciseModalVisible} setModalVisible={setExerciseModalVisible}>
+            <CustomModal modalVisible={exerciseModalVisible}>
                 <ExerciseInfo setExerciseModalVisible={setExerciseModalVisible} exercise={viewExercise}></ExerciseInfo>
             </CustomModal>
-            <CustomModal modalVisible={filterModalVisible} setModalVisible={setFilterModalVisible}>
+            <CustomModal modalVisible={filterModalVisible}>
                 <ExerciseFilter levels={getLevels(exerciseList)} selectedLevel={selectedLevel} setSelectedLevel={setSelectedLevel} 
                 equipment={getEquipment(exerciseList)} selectedEquipment={selectedEquipment} setSelectedEquipment={setSelectedEquipment}
                 muscles={getMuscles(exerciseList)} selectedMuscle={selectedMuscle} setSelectedMuscle={setSelectedMuscle}
+                categories={getCategories(exerciseList)} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
+                forces={getForces(exerciseList)} selectedForce={selectedForce} setSelectedForce={setSelectedForce}
                 setFilterModalVisible={setFilterModalVisible}></ExerciseFilter>
             </CustomModal>
         </Background>

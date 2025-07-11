@@ -25,3 +25,21 @@ export const getMuscles = function(exerciseList:exercise[]):string[]{
     })
     return Array.from(muscles)
 }
+
+export const getCategories = function(exerciseList:exercise[]):string[]{
+    const categories = new Set<string>();
+    exerciseList.forEach(exercise=>{
+        categories.add(exercise.category)
+    })
+    return Array.from(categories)
+}
+
+export const getForces = function(exerciseList:exercise[]):string[]{
+    const forces = new Set<string>();
+    exerciseList.forEach(exercise=>{
+        if(exercise.force !== null){
+            forces.add(exercise.force)
+        }
+    })
+    return Array.from(forces)
+}
