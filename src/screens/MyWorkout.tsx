@@ -8,6 +8,8 @@ import Background from '../components/Background';
 import CustomText from '../components/CustomText';
 import CustomButton from '../components/CustomButton';
 import WorkoutInfoFlatlist from '../components/WorkoutInfoFlatlist'
+import CustomModal from '../components/CustomModal'
+import FinishingWorkoutDetails from '../components/FinishingWorkoutDetails'
 
 /*type setsType={
     setNum:number,
@@ -341,8 +343,12 @@ const styles = StyleSheet.create({
 });*/
 
 const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
+    const [finishingModalVisible,setFinishingModalVisible] = useState(false)//determines whether or not the modal where users can input their final workout details is shown or not
     return(
         <Background>
+            <CustomModal modalVisible={finishingModalVisible}>
+                <FinishingWorkoutDetails setFinishingModalVisible={setFinishingModalVisible} ></FinishingWorkoutDetails>
+            </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
             <View style={styles.bottomBtnContainer}> {/**Holds the bottom buttons */}
@@ -359,7 +365,7 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
                 <CustomButton text='Finish'
                 extraBtnDesign={{backgroundColor:'#4caf50',width:120,height:35,borderRadius:10}}
                 extraTxtDesign={{fontWeight:700,fontSize:14}}
-                action={()=>{navigation.navigate('Create')}}
+                action={()=>{setFinishingModalVisible(true)}}
                 ></CustomButton>
             </View>
         </Background>

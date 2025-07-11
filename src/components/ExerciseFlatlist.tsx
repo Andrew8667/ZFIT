@@ -1,41 +1,10 @@
 import { StyleSheet, ScrollView, Pressable,FlatList,TouchableWithoutFeedback, View, Text,Button, SafeAreaView,Alert,Image, TextInput,TouchableOpacity, Modal } from 'react-native'
 import {exercise} from '../types/exercise'
 import CustomText from './CustomText'
-
-/**
- * Boxes containing info in the exercise flatlist
- * Can press on each box and view more info
- * @param param0 contains item which is an exercise in the exercise list
- * -setViewExercise which allows us to set which exercise is clicked
- * -setModalVisible to control when the extra exercise info is shown
- * @returns clickable flatlist item containing exercise info 
- */
-const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void})=>{
-    return(
-    <Pressable 
-        key={item.id}
-        onPress={()=>{
-        setViewExercise(item);
-        setModalVisible(true)}}
-        style={({pressed})=>
-            pressed?styles.containerPressed:styles.containerNotPressed
-        }>
-        <View style={styles.textContainer}>
-            <CustomText text={item.name}
-            textStyle={styles.textStyle}></CustomText>
-            <CustomText text={item.primaryMuscles[0]}
-            textStyle={styles.textStyle}></CustomText>
-        </View>
-        <Image style={{width:123,height:123}}source={{uri: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/' + item.images[0]}}></Image>
-        <TouchableOpacity>
-            <Image source={require('../../assets/Load_circle_light.png')}></Image>
-        </TouchableOpacity>
-    </Pressable>
-    )
-}
-
-//assigns each exercise a key
-const keyExtractor = (item: exercise) => item.id;
+import { useDispatch, useSelector } from 'react-redux'
+import { addExercise, removeExercise } from '../store/workoutSlice'
+import { hasExercise } from '../utils/workoutHelpers'
+import RootState from '../store/store'
 
 /**
  * Flatlist containing exercise item components
@@ -45,6 +14,43 @@ const keyExtractor = (item: exercise) => item.id;
  * @returns a flatlist contain
  */
 const ExerciseFlatlist = function ExerciseFlatlist({exerciseList,setViewExercise,setModalVisible}:{exerciseList:exercise[],setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void}){
+    const dispatch = useDispatch()
+    const exercises = useSelector((state:RootState)=>state.workout).exercises
+    /**
+ * Clickable boxes containing exercise info such as title, muscle,picture and download button
+ * @param param0 contains item which is an exercise in the exercise list
+ * -setViewExercise which allows us to set which exercise is clicked
+ * -setModalVisible to control when the extra exercise info is shown
+ * @returns clickable flatlist item containing exercise info 
+ */
+const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void})=>{
+    return(
+        <TouchableOpacity onPress={()=>{
+            setViewExercise(item);
+            setModalVisible(true)}}
+            style={hasExercise(item.name,exercises)? styles.containerSelected:styles.container}>
+            <View style={styles.textContainer}>
+                <CustomText text={item.name}
+                textStyle={styles.textStyle}></CustomText>
+                <CustomText text={item.primaryMuscles[0]}
+                textStyle={styles.textStyle}></CustomText>
+            </View>
+            <Image style={{width:123,height:123}}source={{uri: 'https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/' + item.images[0]}}></Image>
+            <TouchableOpacity onPress={()=>{
+                if(hasExercise(item.name,exercises)){
+                    dispatch(removeExercise(item.name))
+                } else {
+                    dispatch(addExercise(item.name+':'+item.primaryMuscles[0]))
+                }
+            }}>
+                <Image source={hasExercise(item.name,exercises)?require('../../assets/Remove.png'):require('../../assets/Load_circle_light.png')}></Image>
+            </TouchableOpacity>
+        </TouchableOpacity>
+    )
+}
+
+//assigns each exercise a key
+const keyExtractor = (item: exercise) => item.id;
     return(
         <FlatList
         contentContainerStyle={{alignItems:'center',justifyContent:'center'}}
@@ -62,17 +68,17 @@ const styles = StyleSheet.create({
         marginTop:15,
         marginBottom:30
     },
-    containerPressed:{
+    containerSelected:{
         width:356,
         height:123,
         flexDirection:'row',
-        backgroundColor:'#e4e4e4',
+        backgroundColor:'#70BF73',
         marginBottom:15,
         justifyContent:'space-evenly',
         alignItems:'center',
         borderRadius:10
     },
-    containerNotPressed:{
+    container:{
         width:356,
         height:123,
         flexDirection:'row',

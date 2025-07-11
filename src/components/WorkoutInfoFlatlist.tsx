@@ -6,6 +6,10 @@ import {addSet,clearWorkout,updateTitle,updateReps,addExercise,deleteSet,removeE
 import CustomText from './CustomText'
 import CustomButton from './CustomButton'
 
+/**
+ * Component to keep track of the exercises in the workout
+ * @returns a flatlist containing the exercises of the workout and workout sets and their details
+ */
 const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
     const workout = useSelector((state:RootState)=>state.workout); //the state of the workout
     const dispatch = useDispatch()//can use dispatch to call slice reducers

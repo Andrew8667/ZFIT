@@ -1,67 +1,20 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {useState} from 'react'
+import { workoutSliceType } from '../types/exercise';
 
 /**
- * Each workout starts out like this
- * exercises will contain a list of objects
- * these objects will have an exercise name and sets for that exercise
- * sets will contain a list of objecets containing set number, lbs, and reps
+ *  Workouts will start out empty like this
+ * exercises contains a list of objects
+ * Each object has an exercise title and sets which is a list of set objects
+ * of the form {setnum,lbs,reps}
  */
-const initialState={
-    title:'test',
-    exercises:[
-        {
-            name:"chest press",
-            sets:[
-                {
-                    setNum:1,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:2,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:3,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:4,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:5,
-                    lbs:0,
-                    reps:0,
-                }
-            ]
-        },,{
-            name:"Squat",
-            sets:[
-                {
-                    setNum:1,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:2,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:3,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:4,
-                    lbs:0,
-                    reps:0,
-                },{
-                    setNum:5,
-                    lbs:0,
-                    reps:0,
-                }
-            ]
-        }
-    ]
+const initialState:workoutSliceType={
+    title:'',
+    date: new Date().toISOString().split("T")[0],
+    duration:0,
+    musclegroups:[],
+    notes:'',
+    exercises:[]
 };
 
 /**
@@ -71,9 +24,12 @@ const workoutSlice = createSlice({
     name:'workout',
     initialState,
     reducers:{
-    addExercise:(state,action)=>{ {/*adds an exercise with an empty set if the exercise doesn't exist*/}
+    addExercise:(state,action)=>{ {/*adds an exercise with an empty set if the exercise doesn't exist
+action.payload of the form name:primarymuscle*/}
+            const name = action.payload.split(':')[0]
+            const muscle = action.payload.split(':')[1]
             const newExercise = {
-                name:action.payload,
+                name:name,
                 sets:[{
                     setNum:1,
                     lbs:0,
@@ -82,11 +38,12 @@ const workoutSlice = createSlice({
             };
             let exerciseExists = false;
             state.exercises.forEach((exercise)=>{
-                if(exercise.name === action.payload){
+                if(exercise.name === name){
                     exerciseExists = true;
                 }
             })
             if(!exerciseExists){
+                state.musclegroups.push(muscle)
                 state.exercises.push(newExercise);
             }
         },
@@ -129,6 +86,10 @@ const workoutSlice = createSlice({
         removeExercise:(state, action)=>{{/**updates the state to be without the exercise with a given name */}
             const newState = {
                 title:state.title,
+                date:state.date,
+                duration:state.duration,
+                musclegroups:state.musclegroups,
+                notes:state.notes,
                 exercises: state.exercises.filter(exercise=>exercise.name !== action.payload)
             }
             return newState;
@@ -178,11 +139,34 @@ const workoutSlice = createSlice({
         updateTitle:(state,action)=>{{/**Whenever user updates the title of workout in myworkout, it updates workout in slice*/}
             state.title = action.payload
         },
+        updateDate:(state,action)=>{{/**Whenever user updates the date of workout in myworkout, it updates workout in slice*/}
+            state.date = action.payload
+        },
+        updateDuration:(state,action)=>{{/**Whenever user updates the duration of workout in myworkout, it updates workout in slice*/}
+            state.duration = action.payload
+        },
+        updateMusclegroups:(state,action)=>{{/**Whenever user adds exercise to workout in myworkout, it updates workout in slice*/}
+            let contains = false;
+            state.musclegroups.forEach(muscle=>{
+                if(muscle === action.payload){
+                    contains=true
+                }
+            })
+            if(!contains){
+                state.musclegroups.push(action.payload)
+            }
+        },
+        updateNotes:(state,action)=>{{/**Whenever user updates the notes of workout in myworkout, it updates workout in slice*/}
+            state.notes = action.payload
+        },
         clearWorkout:(state,action)=>{ {/**Will reset the workout slice to be empty */}
             const cleanedWorkout = {
                 title:'',
+                date: new Date().toISOString().split("T")[0],
+                duration:0,
+                musclegroups:[],
+                notes:'',
                 exercises:[
-
                 ]
             }
             return cleanedWorkout;
@@ -190,11 +174,15 @@ const workoutSlice = createSlice({
         populateWorkout:(state,action)=>{ {/** Sets the slice state to be an already in progress workout*/}
             return {
                 title:action.payload.title,
+                date:action.payload.date,
+                duration:action.payload.duration,
+                musclegroups: action.payload.musclegroups,
+                notes: action.payload.notes,
                 exercises:action.payload.exercises
             }
         }
     }
 });
 
-export const {populateWorkout,clearWorkout,createWorkout,updateTitle,addExercise,addSet,deleteSet,removeExercise,updateLbs,updateReps} = workoutSlice.actions;
+export const {updateDate,updateDuration,updateMusclegroups,updateNotes, populateWorkout,clearWorkout,updateTitle,addExercise,addSet,deleteSet,removeExercise,updateLbs,updateReps} = workoutSlice.actions;
 export default workoutSlice.reducer;
