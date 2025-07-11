@@ -11,3 +11,12 @@ export type exercise = { //structure of exercise in the list
     images:string[],
     id:string
 }
+
+export type singleExercise = {
+    name:string,
+    sets:setsType[]
+}
+
+export type setsType = {
+    setNum:number,lbs:number,reps:number
+}

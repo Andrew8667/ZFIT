@@ -7,6 +7,7 @@ import { supabase } from '../lib/supabase';
 import Background from '../components/Background';
 import CustomText from '../components/CustomText';
 import CustomButton from '../components/CustomButton';
+import WorkoutInfoFlatlist from '../components/WorkoutInfoFlatlist'
 
 /*type setsType={
     setNum:number,
@@ -343,7 +344,8 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
     return(
         <Background>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
-            <View style={styles.bottomBtnContainer}>
+            <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
+            <View style={styles.bottomBtnContainer}> {/**Holds the bottom buttons */}
                 <CustomButton text='Return'
                 extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10}}
                 extraTxtDesign={{fontWeight:700,fontSize:14}}

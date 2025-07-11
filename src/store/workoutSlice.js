@@ -1,17 +1,77 @@
 import { createSlice } from '@reduxjs/toolkit';
 import {useState} from 'react'
 
+/**
+ * Each workout starts out like this
+ * exercises will contain a list of objects
+ * these objects will have an exercise name and sets for that exercise
+ * sets will contain a list of objecets containing set number, lbs, and reps
+ */
 const initialState={
-    title:'',
+    title:'test',
     exercises:[
+        {
+            name:"chest press",
+            sets:[
+                {
+                    setNum:1,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:2,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:3,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:4,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:5,
+                    lbs:0,
+                    reps:0,
+                }
+            ]
+        },,{
+            name:"Squat",
+            sets:[
+                {
+                    setNum:1,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:2,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:3,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:4,
+                    lbs:0,
+                    reps:0,
+                },{
+                    setNum:5,
+                    lbs:0,
+                    reps:0,
+                }
+            ]
+        }
     ]
 };
 
+/**
+ * Operates on info for the workout
+ */
 const workoutSlice = createSlice({
     name:'workout',
     initialState,
     reducers:{
-        addExercise:(state,action)=>{
+    addExercise:(state,action)=>{ {/*adds an exercise with an empty set if the exercise doesn't exist*/}
             const newExercise = {
                 name:action.payload,
                 sets:[{
@@ -30,7 +90,7 @@ const workoutSlice = createSlice({
                 state.exercises.push(newExercise);
             }
         },
-        addSet:(state,action)=>{
+        addSet:(state,action)=>{ {/**Adds set to exercise */}
             state.exercises.forEach((exercise)=>{
                 if(exercise.name === action.payload){
                     exercise.sets.push(
@@ -43,7 +103,8 @@ const workoutSlice = createSlice({
                 }
             })
         },
-        deleteSet:(state,action)=>{
+        deleteSet:(state,action)=>{ {/**takes in exercise of the set num to be deleted.
+        deletes that set and updates the set numbers of the sets after it */}
             const fields = action.payload.split(',');
             const findName = fields[0];
             const setNum = parseInt(fields[1]);
@@ -65,14 +126,14 @@ const workoutSlice = createSlice({
                 }
             })
         },
-        removeExercise:(state, action)=>{
+        removeExercise:(state, action)=>{{/**updates the state to be without the exercise with a given name */}
             const newState = {
                 title:state.title,
                 exercises: state.exercises.filter(exercise=>exercise.name !== action.payload)
             }
             return newState;
         },
-        updateLbs:(state,action)=>{
+        updateLbs:(state,action)=>{{/**Whenever user updates the value of lbs in myworkout, it updates lbs in slice*/}
             //action.payload be 'name,set,new lbs'
             const name = action.payload.split(',')[0];
             const setNum = parseInt(action.payload.split(',')[1]);
@@ -93,7 +154,7 @@ const workoutSlice = createSlice({
                 }
             }
         },
-        updateReps:(state,action)=>{
+        updateReps:(state,action)=>{ {/**Whenever user updates the value of reps in myworkout, it updates reps in slice*/}
             //action.payload be 'name,set,new lbs'
             const name = action.payload.split(',')[0];
             const setNum = parseInt(action.payload.split(',')[1]);
@@ -114,10 +175,10 @@ const workoutSlice = createSlice({
                 }
             }
         },
-        updateTitle:(state,action)=>{
+        updateTitle:(state,action)=>{{/**Whenever user updates the title of workout in myworkout, it updates workout in slice*/}
             state.title = action.payload
         },
-        clearWorkout:(state,action)=>{
+        clearWorkout:(state,action)=>{ {/**Will reset the workout slice to be empty */}
             const cleanedWorkout = {
                 title:'',
                 exercises:[
@@ -126,7 +187,7 @@ const workoutSlice = createSlice({
             }
             return cleanedWorkout;
         },
-        populateWorkout:(state,action)=>{
+        populateWorkout:(state,action)=>{ {/** Sets the slice state to be an already in progress workout*/}
             return {
                 title:action.payload.title,
                 exercises:action.payload.exercises

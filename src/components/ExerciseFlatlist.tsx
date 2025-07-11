@@ -1,4 +1,4 @@
-import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,Button, SafeAreaView,Alert,Image, TextInput,TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, ScrollView, Pressable,FlatList,TouchableWithoutFeedback, View, Text,Button, SafeAreaView,Alert,Image, TextInput,TouchableOpacity, Modal } from 'react-native'
 import {exercise} from '../types/exercise'
 import CustomText from './CustomText'
 
@@ -12,9 +12,14 @@ import CustomText from './CustomText'
  */
 const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setViewExercise:(input:exercise)=>void,setModalVisible:(input:boolean)=>void})=>{
     return(
-    <TouchableOpacity style={styles.container} onPress={()=>{
+    <Pressable 
+        key={item.id}
+        onPress={()=>{
         setViewExercise(item);
-        setModalVisible(true)}}>
+        setModalVisible(true)}}
+        style={({pressed})=>
+            pressed?styles.containerPressed:styles.containerNotPressed
+        }>
         <View style={styles.textContainer}>
             <CustomText text={item.name}
             textStyle={styles.textStyle}></CustomText>
@@ -25,7 +30,7 @@ const flatListItem = ({item,setViewExercise,setModalVisible}:{item:exercise,setV
         <TouchableOpacity>
             <Image source={require('../../assets/Load_circle_light.png')}></Image>
         </TouchableOpacity>
-    </TouchableOpacity>
+    </Pressable>
     )
 }
 
@@ -55,13 +60,23 @@ const ExerciseFlatlist = function ExerciseFlatlist({exerciseList,setViewExercise
 const styles = StyleSheet.create({
     flatList:{
         marginTop:15,
-        marginBottom:25
+        marginBottom:30
     },
-    container:{
+    containerPressed:{
         width:356,
         height:123,
         flexDirection:'row',
-        backgroundColor:'white',
+        backgroundColor:'#e4e4e4',
+        marginBottom:15,
+        justifyContent:'space-evenly',
+        alignItems:'center',
+        borderRadius:10
+    },
+    containerNotPressed:{
+        width:356,
+        height:123,
+        flexDirection:'row',
+        backgroundColor:'#FFFFFF',
         marginBottom:15,
         justifyContent:'space-evenly',
         alignItems:'center',
