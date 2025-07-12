@@ -5,12 +5,13 @@ import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,B
  * @param param0 setSearchText allows us to keep track of what is being typed in the search bar
  * @returns a search bar with a filter option
  */
-const Search = function Search({setSearchText,action}:{setSearchText:(item:string)=>void,action:(input:boolean)=>void}){
+const Search = function Search({setSearchText,searchText,action}:{setSearchText:(item:string)=>void,searchText:string,action:(input:boolean)=>void}){
     return(
         <View style = {styles.container}>
             <TextInput style={styles.textStyle}
                 placeholder='Search by title'
                 placeholderTextColor='#B2B2B2'
+                value={searchText}
                 onChangeText={(input)=>{setSearchText(input)}}></TextInput>
                 <TouchableOpacity onPress={()=>action(true)}>
                     <Image style={styles.img} source={require('../../assets/Sort.png')}></Image>

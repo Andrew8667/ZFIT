@@ -43,8 +43,16 @@ action.payload of the form name:primarymuscle*/}
                 }
             })
             if(!exerciseExists){
-                state.musclegroups.push(muscle)
                 state.exercises.push(newExercise);
+            }
+            let muscleExists = false;
+            state.musclegroups.forEach((newMuscle)=>{
+                if(newMuscle === muscle){
+                    muscleExists=true
+                }
+            })
+            if(!muscleExists){
+                state.musclegroups.push(muscle)
             }
         },
         addSet:(state,action)=>{ {/**Adds set to exercise */}

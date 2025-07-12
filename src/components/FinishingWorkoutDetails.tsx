@@ -3,10 +3,11 @@ import CustomButton from './CustomButton';
 import CustomText from './CustomText';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
-import { updateTitle,updateDate,updateDuration,updateMusclegroups,updateNotes} from '../store/workoutSlice';
+import { updateTitle,updateDate,updateDuration,updateMusclegroups,updateNotes, clearWorkout} from '../store/workoutSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { getDate } from '../utils/workoutHelpers';
+import { checkWorkout, getDate, recordWorkout } from '../utils/workoutHelpers';
 import RootState from '../store/store';
+import { NavigationProp } from '@react-navigation/native';
 
 /**
  * Content inside the modal when finish button is clicked
@@ -14,10 +15,15 @@ import RootState from '../store/store';
  * @param param0 setFinishingModalVisible helps to control whether the modal is shown or not
  * @returns a component where users can input their finishing details for their workout
  */
-const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingModalVisible}:
-    {setFinishingModalVisible:(input:false)=>void}){
+const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingModalVisible,source,navigation}:
+    {setFinishingModalVisible:(input:false)=>void,source:string,navigation:NavigationProp<any>}){
         const dispatch = useDispatch()
         const workout = useSelector((state:RootState)=>state.workout)//gets the state of the workout slice
+        const checkAlert = function checkAlert(){ //returns an alert if title is empty
+            return(
+                Alert.alert('Missing Title','Please give your workout a title')
+            )
+        }
         return(
         <View style={styles.greyedBackground}>
             <View style={styles.modalContainer}>
@@ -63,10 +69,20 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                     height:35,borderRadius:10}}
                     extraTxtDesign={{fontWeight:700,fontSize:14}} 
                     action={()=>{setFinishingModalVisible(false)}}></CustomButton>
-                    <CustomButton text='Submit'
+                    <CustomButton text={source==='finish'?'Submit':'Save'}
                     extraBtnDesign={{backgroundColor:"#4CAF50",width:120,
                     height:35,borderRadius:10}}
-                    extraTxtDesign={{fontWeight:700,fontSize:14}}></CustomButton>
+                    extraTxtDesign={{fontWeight:700,fontSize:14}}
+                    action={()=>{
+                        if(!checkWorkout(workout)){ //workout doesn't have a title
+                            checkAlert()
+                        } else {
+                            recordWorkout(workout,source)
+                            dispatch(clearWorkout(''))
+                            setFinishingModalVisible(false)
+                            navigation.navigate('Create')
+                        }
+                    }}></CustomButton>
                 </View>
             </View>
         </View>

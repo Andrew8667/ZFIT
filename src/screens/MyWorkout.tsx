@@ -344,10 +344,42 @@ const styles = StyleSheet.create({
 
 const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
     const [finishingModalVisible,setFinishingModalVisible] = useState(false)//determines whether or not the modal where users can input their final workout details is shown or not
+    const [source,setSource] = useState('finish')
+    const dispatch = useDispatch()
+    //Alert asking users if they want to save their workout to inprogress or not
+    const saveWorkoutAlert = function saveWorkoutAlert(){
+        return(
+            Alert.alert(
+                'Save Workout',
+                'How would you like to save the workout?',
+                [
+                  {
+                    text: 'Discard',
+                    style: 'destructive',
+                    onPress: () => {
+                      dispatch(clearWorkout(''))
+                      navigation.navigate('Create')
+                    },
+                  },
+                  {
+                    text: 'Save to In Progress',
+                    onPress: () => {
+                        setSource('inprogress')
+                        setFinishingModalVisible(true)
+                    },
+                  },
+                  {
+                    text: 'Cancel',
+                    style: 'cancel',
+                  },
+                ],
+                { cancelable: true }
+              ));
+    }
     return(
         <Background>
             <CustomModal modalVisible={finishingModalVisible}>
-                <FinishingWorkoutDetails setFinishingModalVisible={setFinishingModalVisible} ></FinishingWorkoutDetails>
+                <FinishingWorkoutDetails setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
             </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
@@ -355,7 +387,7 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
                 <CustomButton text='Return'
                 extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10}}
                 extraTxtDesign={{fontWeight:700,fontSize:14}}
-                action={()=>{navigation.navigate('Create')}}
+                action={()=>{saveWorkoutAlert()}}
                 ></CustomButton>
                 <CustomButton text='Add Exercise'
                 extraBtnDesign={{backgroundColor:'#FFFFFF',width:120,height:35,borderRadius:10}}
@@ -365,7 +397,10 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
                 <CustomButton text='Finish'
                 extraBtnDesign={{backgroundColor:'#4caf50',width:120,height:35,borderRadius:10}}
                 extraTxtDesign={{fontWeight:700,fontSize:14}}
-                action={()=>{setFinishingModalVisible(true)}}
+                action={()=>{
+                    setSource('finish')
+                    setFinishingModalVisible(true)
+                }}
                 ></CustomButton>
             </View>
         </Background>

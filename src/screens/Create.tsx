@@ -8,6 +8,9 @@ import NavBar from '../components/NavBar'
 import Background from '../components/Background'
 import CustomText from '../components/CustomText';
 import CustomButton from '../components/CustomButton';
+import { getSets, getWorkouts } from '../lib/workouts';
+import { getFullWorkouts } from '../utils/workoutHelpers';
+import StoredWorkouts from '../components/StoredWorkouts';
 
 /*const Create = function Create({navigation}:{navigation:any}){ 
     const [inProgressList, setInProgressList] = useState<workoutDetails[]>([]);
@@ -224,6 +227,7 @@ const Create = function Create({navigation}:{navigation:any}){
             extraBtnDesign={{backgroundColor:'#f57c00',width:200,height:50,borderRadius:10,alignSelf:'center',marginTop:42}}
             extraTxtDesign={{fontSize:14,fontWeight:500}}
             action={()=>navigation.navigate('MyWorkout')}></CustomButton>
+            <StoredWorkouts isHorizontal={true} type='inprogress' containerStyle={{width:'100%',height:220,marginTop:25,justifyContent:'center'}}></StoredWorkouts>
             <NavBar navigation={navigation} curScreen='create'></NavBar>
         </Background>
     )

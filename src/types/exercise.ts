@@ -1,3 +1,5 @@
+import { SwipeRatingProps } from "@rneui/themed"
+
 export type exercise = { //structure of exercise in the list
     name:string,
     force:string,
@@ -28,4 +30,26 @@ export type singleExercise = {
 
 export type setsType = {
     setNum:number,lbs:number,reps:number
+}
+
+export type workoutReturn = {
+    created_at:string,
+    date:string,
+    duration:number,
+    id:string,
+    inprogress:boolean,
+    musclegroups:string,
+    notes:string,
+    title:string,
+    user:string
+}
+
+export type setReturn = {
+    id:string,
+    exercise:string,
+    set_num:number,
+    created_at:string,
+    lbs:number,
+    reps:number,
+    useid:string
 }

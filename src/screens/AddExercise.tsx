@@ -243,7 +243,7 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
         <Background>
             <CustomText text="Add Exercise"
             textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
-            <Search setSearchText={setSearchText} action={setFilterModalVisible}></Search>
+            <Search setSearchText={setSearchText} searchText={searchText} action={setFilterModalVisible}></Search>
             <ExerciseFlatlist exerciseList={exerciseList.filter(exercise=>exercise.name.trim().toLowerCase().includes(searchText.toLowerCase().trim())
                 && (exercise.primaryMuscles[0].includes(selectedMuscle))
                 && (exercise.level.includes(selectedLevel))

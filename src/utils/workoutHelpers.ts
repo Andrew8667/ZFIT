@@ -1,6 +1,11 @@
-import { exercise, singleExercise, workoutSliceType } from "../types/exercise"
+import { exercise, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType } from "../types/exercise"
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
+import { supabase } from "../lib/supabase";
+import { addToSet } from "../lib/sets";
+import { getSets, getWorkouts } from "../lib/workouts";
+import ExerciseFlatlist from "../components/ExerciseFlatlist";
+import { fetchData } from "../api/exercises";
 /**
  * Gets all the unique levels of each exercise in the list
  * @param exerciseList list of all the exercises and their info
@@ -40,6 +45,24 @@ export const getMuscles = function(exerciseList:exercise[]):string[]{
         muscles.add(exercise.primaryMuscles[0])
     })
     return Array.from(muscles)
+}
+
+/**
+ * Used for WorkoutFilter.tsx
+ * @param exerciseList a list of exercises retrived from api
+ * @returns list of muscles for multipicker with label and value
+ */
+export const getMusclesList = function(exerciseList:exercise[]):{label:string,value:string}[]{
+    const muscles = new Set<string>();
+    exerciseList.forEach(exercise=>{
+        muscles.add(exercise.primaryMuscles[0])
+    })
+    const musclesArr = Array.from(muscles)
+    const musclesList:{label:string,value:string}[]=[]
+    musclesArr.forEach(muscle=>{
+        musclesList.push({value:muscle,label:muscle})
+    })
+    return musclesList;
 }
 
 /**
@@ -93,5 +116,72 @@ export const hasExercise = function(targetName:string,exercises:singleExercise[]
         }
     })
     return isTrue
+}
+
+/**
+ * Determines if a workout has the criteria to be added to database
+ * @param workout workout being checked
+ * @returns true if the workout has a title, false otherwise
+ */
+export const checkWorkout = function checkWorkout(workout:workoutSliceType):boolean{
+    return workout.title !== ''
+}
+
+/**
+ * Adds workout to database
+ * @param workout to be added to database
+ * @param source either from in progress or finish
+ */
+export const recordWorkout = async function recordWorkout(workout:workoutSliceType,source:string){
+    if(source === 'inprogress'){
+        await addToSet(workout,true) //adding to workout included in addToSet
+    } else {
+        await addToSet(workout,false)
+    }
+}
+
+/**
+ * Get the workouts that are in progress or finished
+ * @param inprogress workout can either be in progress or finished
+ * @returns an array containing filtered workouts
+ */
+export async function getFullWorkouts(inprogress:boolean){
+    const workoutArr: workoutSliceType[]= []
+    const workouts:workoutReturn[]= await getWorkouts(inprogress)
+    const sets:setReturn[]= await getSets('')
+    const filteredWorkouts = workouts.filter(workout=>workout.inprogress===inprogress) //filtered by inprogress or not
+    filteredWorkouts.forEach(workout=>{
+        const workoutData:workoutSliceType = {
+            title:workout.title,
+            date:workout.date,
+            duration:workout.duration,
+            notes:workout.notes,
+            musclegroups:workout.musclegroups.split(', '),
+            exercises:[]
+        }
+        const filteredSets = sets.filter(set=>set.id===workout.id)
+        filteredSets.forEach(set=>{
+            if(workoutData.exercises.find((exercise:singleExercise)=>exercise.name===set.exercise)){
+                //exercise already inside
+                workoutData.exercises.find((exercise:singleExercise)=>exercise.name===set.exercise)?.sets.push({
+                    setNum:set.set_num,
+                    lbs:set.lbs,
+                    reps:set.reps
+                })
+            } else {
+                workoutData.exercises.push({
+                    name:set.exercise,
+                    sets:[{
+                        setNum:set.set_num,
+                        lbs:set.lbs,
+                        reps:set.reps
+                    }]
+                })
+            }
+        })
+        workoutArr.push(workoutData)
+    })
+    //return array of workouts
+    return(workoutArr)
 }
 

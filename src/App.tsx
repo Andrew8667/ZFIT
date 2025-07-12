@@ -41,7 +41,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="MyWorkout">
+        <Stack.Navigator initialRouteName="Archives">
         <Stack.Screen
           name="Login"
           component={Login}

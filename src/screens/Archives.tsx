@@ -5,9 +5,21 @@ import { Session } from '@supabase/supabase-js';
 import { DialogTitleProps } from '@rneui/themed';
 import {useSelector,useDispatch} from 'react-redux'
 import { populateWorkout } from '../store/workoutSlice';
+import NavBar from '../components/NavBar';
+import Background from '../components/Background';
+import CustomText from '../components/CustomText';
+import StoredWorkouts from '../components/StoredWorkouts';
+import Search from '../components/Search';
+import WorkoutFilter from '../components/WorkoutFilter';
+import CustomModal from '../components/CustomModal';
+import ExerciseFilter from '../components/ExerciseFilter';
+import RootState from '../store/store';
+import { getMusclesList } from '../utils/workoutHelpers';
+import { exercise } from '../types/exercise';
+import { fetchData } from '../api/exercises';
 
 const Archives = function Archives({navigation}:{navigation:any}){ 
-    const dispatch = useDispatch();
+    /*const dispatch = useDispatch();
     //Current session constant
     const [session, setSession] = useState<Session | null>(null);
     //The list of finished workouts
@@ -230,6 +242,34 @@ const styles = StyleSheet.create({
         justifyContent:'space-between',
         alignItems:'center',
     }
-});
+}*/
+    const [exerciseList,setExerciseList] = useState<exercise[]>([])
+    const [searchText,setSearchText] = useState('')
+    const [filterModalVisible, setFilterModalVisible] = useState(false)
+    const [dateOrdering,setDateOrdering] = useState('Newest to Oldest')
+    const [durationRange,setDurationRange] = useState('Any')
+    const [selectedMuscles,setSelectedMuscles] = useState<string[]>([])
+    const [open,setOpen] = useState<boolean>(false)
+    const [items,setItems] = useState<{value:string,label:string}[]>([])
+
+    useEffect(()=>{ //populates the exercise list when screen loads
+        async function loadData(){
+            await fetchData(setExerciseList)
+        }
+        loadData()
+        setItems(getMusclesList(exerciseList))
+    },[])
+    return(
+        <Background>
+            <CustomModal modalVisible={filterModalVisible}>
+                <WorkoutFilter setFilterModalVisible={setFilterModalVisible} dateOrdering={dateOrdering} setDateOrdering={setDateOrdering} durationRange={durationRange} setDurationRange={setDurationRange} selectedMuscles={selectedMuscles} setSelectedMuscles={setSelectedMuscles} open={open} setOpen={setOpen} items={items} setItems={setItems}></WorkoutFilter>
+            </CustomModal>
+            <CustomText text='Archives' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
+            <Search setSearchText={setSearchText} searchText={searchText} action={setFilterModalVisible}></Search>
+            <StoredWorkouts isHorizontal={false} type='finished' containerStyle={{height:610}}></StoredWorkouts>
+            <NavBar navigation={navigation} curScreen='archives'></NavBar>
+        </Background>
+    )
+};
 
 export default Archives;
