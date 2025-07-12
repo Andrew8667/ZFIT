@@ -1,4 +1,4 @@
-import { exercise, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType } from "../types/exercise"
+import { exercise, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
 import { supabase } from "../lib/supabase";
@@ -146,18 +146,19 @@ export const recordWorkout = async function recordWorkout(workout:workoutSliceTy
  * @returns an array containing filtered workouts
  */
 export async function getFullWorkouts(inprogress:boolean){
-    const workoutArr: workoutSliceType[]= []
+    const workoutArr: workoutSliceTypeWithId[]= []
     const workouts:workoutReturn[]= await getWorkouts(inprogress)
     const sets:setReturn[]= await getSets('')
     const filteredWorkouts = workouts.filter(workout=>workout.inprogress===inprogress) //filtered by inprogress or not
     filteredWorkouts.forEach(workout=>{
-        const workoutData:workoutSliceType = {
+        const workoutData:workoutSliceTypeWithId = {
             title:workout.title,
             date:workout.date,
             duration:workout.duration,
             notes:workout.notes,
             musclegroups:workout.musclegroups.split(', '),
-            exercises:[]
+            exercises:[],
+            id:workout.id
         }
         const filteredSets = sets.filter(set=>set.id===workout.id)
         filteredSets.forEach(set=>{
@@ -185,3 +186,29 @@ export async function getFullWorkouts(inprogress:boolean){
     return(workoutArr)
 }
 
+/**
+ * User can filter the workouts to display
+ * @param dateOrdering workouts can be sorted by date
+ * @param durationRange workouts can be sorted by being within a duration range
+ * @param selectedMuscles muscles of the workouts we want to find
+ * @param unfilteredWorkouts workouts without the filters
+ * @returns a filtered workout list
+ */
+export function filteredWorkouts(searchText:string,dateOrdering:string,durationRange:string,selectedMuscles:string[],unfilteredWorkouts:workoutSliceTypeWithId[]):(workoutSliceTypeWithId[]){
+    let sortedWorkouts = dateOrdering === 'Newest to Oldest'?[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date)):[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date)).reverse()//sorts by date
+    switch(durationRange){ //filter by duration
+        case 'Under 30 minutes':
+            sortedWorkouts = sortedWorkouts.filter(workout=>workout.duration<30)
+            break;
+        case '30-60 minutes':
+            sortedWorkouts = sortedWorkouts.filter(workout=>workout.duration>=30 && workout.duration<=60)
+            break;
+        case 'Over 60 minutes':
+            sortedWorkouts = sortedWorkouts.filter(workout=>workout.duration>60)
+            break;
+        default:
+    }
+    sortedWorkouts = sortedWorkouts.filter(workout=>workout.title.trim().toLowerCase().includes(searchText.trim().toLowerCase()))
+    sortedWorkouts = sortedWorkouts.filter(workout=>selectedMuscles.every(muscle=>workout.musclegroups.includes(muscle)))//filter by muscle group
+    return sortedWorkouts
+}

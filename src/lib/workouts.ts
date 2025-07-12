@@ -67,3 +67,14 @@ export async function getSets(user:string){
     }
     return data
 }
+
+/**
+ * Deletes workout from workout table using id of that workout
+ * @param id the id of workout to be deleted
+ */
+export async function deleteWorkout(id:string){
+    const{error} = await supabase
+        .from('workout')
+        .delete()
+        .eq('id',id)
+}

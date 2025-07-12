@@ -23,6 +23,16 @@ export type workoutSliceType = {
     exercises:singleExercise[]
 }
 
+export type workoutSliceTypeWithId = {
+    title:string,
+    date:string,
+    duration:number,
+    notes:string,
+    musclegroups:string[],
+    exercises:singleExercise[],
+    id:string
+}
+
 export type singleExercise = {
     name:string,
     sets:setsType[]

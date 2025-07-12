@@ -9,225 +9,49 @@ import Background from '../components/Background'
 import CustomText from '../components/CustomText';
 import CustomButton from '../components/CustomButton';
 import { getSets, getWorkouts } from '../lib/workouts';
-import { getFullWorkouts } from '../utils/workoutHelpers';
+import { filteredWorkouts, getFullWorkouts, getMusclesList } from '../utils/workoutHelpers';
 import StoredWorkouts from '../components/StoredWorkouts';
+import { exercise, workoutSliceType, workoutSliceTypeWithId } from '../types/exercise';
+import { fetchData } from '../api/exercises';
+import Search from '../components/Search';
 
-/*const Create = function Create({navigation}:{navigation:any}){ 
-    const [inProgressList, setInProgressList] = useState<workoutDetails[]>([]);
-    const dispatch = useDispatch();
-    //navigate to different pages
-    const redirect = (dest:string)=>{
-        navigation.navigate(dest);
-    }
-
-    type exerciseList = {
-        exercises:{name:string,sets:{setNum:number,lbs:number,reps:number}[]}[]
-    }
-
-    //get list [{title,date},...]
-    type workoutDetails = {
-        id:string,
-        title:string,
-        created_at:string
-    }
-    const getInProgress = async ()=>{
-        const { data, error } = await supabase
-            .from('workout')
-            .select('id,title,created_at')
-            .eq('in_progress',true)
-        if(error){
-            console.log('Error retrieving in progress workouts from workout', error)
-        }else {
-            const inProgressList:workoutDetails[] = []
-            data.forEach(workout=>{
-                inProgressList.push({
-                    id:workout.id,
-                    title:workout.title,
-                    created_at:workout.created_at
-                })
-            })
-            setInProgressList(inProgressList);
-        }
-    }
-    useEffect(() => {
-        getInProgress();
-      }, []);
-    const keyExtractor = (item: workoutDetails, index: number) => {
-        return item.title + index.toString(); // unique key per item
-    };
-  const renderItem = ({ item }: { item: workoutDetails }) => {
-    return (
-        <TouchableOpacity onPress={()=>{
-            const title = item.title
-            const map = new Map();
-            const loadData = async ()=>{
-                const data = await getPrevWorkout(item.id);
-                data?.[0].set.forEach(set=>{
-                    if(map.has(set.exercise)){
-                        map.get(set.exercise).push({setNum:set.set_num,lbs:set.lbs,reps:set.reps});
-                    } else {
-                        map.set(set.exercise,[{setNum:set.set_num,lbs:set.lbs,reps:set.reps}])
-                    }
-                });
-                const holdingList:{name:string,sets:{setNum:number,lbs:number,reps:number}[]}[] = []
-                map.forEach((value,key)=>{
-                    holdingList.push({name:key,sets:value})
-                })
-                const workout = {
-                    title:title,
-                    exercises: holdingList
-                }
-                dispatch(populateWorkout(workout))
-                clear(item.id)
-            }
-            loadData()
-            navigation.navigate('MyWorkout')
-        }} style={styles.workoutContainer}>
-            <Text style={styles.workoutTitle}>{item.title}</Text>
-            <Text style={styles.workoutDate}>{item.created_at.substring(0,10)}</Text> 
-        </TouchableOpacity>
-    );
-  };
-
-  async function getPrevWorkout(id:string){
-    const{data,error} = await supabase
-        .from('workout')
-        .select(
-            'title,set(exercise,set_num,lbs,reps)'
-        )
-        .eq('id',id)
-    if(error){
-        console.log('Error getting previous workout', error)
-    } else {
-        return data
-    }
-  }
-
-  async function clear(id:string){
-    await supabase
-        .from('workout')
-        .delete()
-        .eq('id',id)
-    await supabase
-        .from('set')
-        .delete()
-        .eq('id',id)
-  }
-
-  
-    return(
-        <SafeAreaView style={styles.container}>
-            <Text style={styles.title}>Create</Text>
-            <TouchableOpacity onPress={()=>navigation.navigate('MyWorkout')} style={styles.createWorkoutBtn}>
-                <Text style={styles.createWorkoutBtnText}>Create a New Workout</Text>
-            </TouchableOpacity>
-            <View style={styles.inProgressContainer}>
-                <Text style={styles.inProgressTitle}>In Progress</Text>
-                <View style={styles.inProgressListContainer}>
-                    <FlatList contentContainerStyle={styles.flatList} data={inProgressList} keyExtractor={keyExtractor} renderItem={renderItem} horizontal={true}></FlatList>
-                </View>
-            </View>
-            
-        </SafeAreaView>
-    );
-}
-
-const styles = StyleSheet.create({
-    container:{
-        flex:1,
-        backgroundColor:'#FFFFFF',
-        alignItems:'center'
-    },
-    title:{
-        fontFamily:'Inter',
-        fontWeight:700,
-        fontSize:37,
-        marginTop:42,
-    },
-    navContainer:{
-        backgroundColor:'#FFFFFF',
-        width:367,
-        height:66,
-        position:'absolute',
-        bottom:30,
-        borderRadius:10,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.2,
-        shadowRadius: 3,
-        flexDirection:'row',
-        justifyContent:'space-between',
-        alignItems:'center',
-    },
-    createWorkoutBtn:{
-        backgroundColor:'#007AFA',
-        width:320,
-        height:45,
-        borderRadius:9,
-        alignItems:'center',
-        justifyContent:'center',
-        marginTop:27
-    },
-    createWorkoutBtnText:{
-        fontFamily:'Inter',
-        fontWeight:500,
-        color:'#FFFFFF',
-        fontSize:16,
-    },
-    inProgressContainer:{
-        width:'100%',
-        height:171,
-        marginTop:27,
-    },
-    inProgressTitle:{
-        fontFamily:'Inter',
-        fontWeight:500,
-        fontSize:20,
-        marginLeft:12,
-    },
-    inProgressListContainer:{
-        height:135,
-        marginTop:7,
-        flex:1,
-        justifyContent:'space-between',
-    },
-    workoutContainer:{
-        width:138,
-        height:87,
-        marginLeft:10,
-        marginRight:10,
-        borderRadius:10,
-        backgroundColor:'#FFFFFF',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 0 },
-        shadowOpacity: 0.25,
-        shadowRadius: 4,
-        justifyContent:'space-evenly',
-        alignItems:'center'
-    },
-    flatList:{
-        alignItems:'center',
-    },
-    workoutTitle:{
-        fontFamily:'Inter',
-        fontWeight:500,
-        fontSize:16
-    },
-    workoutDate:{
-        fontFamily:'Inter',
-        fontWeight:500,
-        fontSize:16
-    }
-});*/
 const Create = function Create({navigation}:{navigation:any}){
+    const [exerciseList,setExerciseList] = useState<exercise[]>([])
+    const [searchText,setSearchText] = useState('')
+    const [filterModalVisible, setFilterModalVisible] = useState(false)
+    const [dateOrdering,setDateOrdering] = useState('Newest to Oldest')
+    const [durationRange,setDurationRange] = useState('Any')
+    const [selectedMuscles,setSelectedMuscles] = useState<string[]>([])
+    const [open,setOpen] = useState<boolean>(false)
+    const [items,setItems] = useState<{value:string,label:string}[]>([])
+    const [workouts,setWorkouts] = useState<workoutSliceTypeWithId[]>([])
+
+    useEffect(()=>{ //populates the exercise list when screen loads
+        async function loadData(){
+            await fetchData(setExerciseList)
+            setWorkouts(await getFullWorkouts(true))
+        }
+        loadData()
+    },[])
+
+    useEffect(()=>{
+        setItems(getMusclesList(exerciseList)) ///{label:string,value:string}[] for the dropdown
+    },[exerciseList])
+    useEffect(()=>{ //populates the exercise list when screen loads
+        async function loadData(){
+            setWorkouts(await getFullWorkouts(true))
+        }
+        loadData()
+    },[])
     return(
         <Background>
             <CustomText text='Create' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <CustomButton text='Create New Workout' 
-            extraBtnDesign={{backgroundColor:'#f57c00',width:200,height:50,borderRadius:10,alignSelf:'center',marginTop:42}}
+            extraBtnDesign={{backgroundColor:'#f57c00',width:200,height:50,borderRadius:10,alignSelf:'center',marginTop:20}}
             extraTxtDesign={{fontSize:14,fontWeight:500}}
             action={()=>navigation.navigate('MyWorkout')}></CustomButton>
-            <StoredWorkouts isHorizontal={true} type='inprogress' containerStyle={{width:'100%',height:220,marginTop:25,justifyContent:'center'}}></StoredWorkouts>
+            <Search setSearchText={setSearchText} searchText={searchText} action={setFilterModalVisible} extraStyle={{marginTop:20}}></Search>
+            <StoredWorkouts navigation={navigation} isHorizontal={false} type='inprogress' workouts={filteredWorkouts(searchText,dateOrdering,durationRange,selectedMuscles,workouts)} containerStyle={{width:'100%',height:550,marginTop:10,justifyContent:'center'}}></StoredWorkouts>
             <NavBar navigation={navigation} curScreen='create'></NavBar>
         </Background>
     )

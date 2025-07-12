@@ -23,3 +23,14 @@ export async function addToSet(workout:workoutSliceType,inProgress:boolean){
         console.log('Error inserting into sets table', error)
     }
 }
+
+/**
+ * Deletes sets from sets table given the id
+ * @param id of sets to be deleted
+ */
+export async function deleteSets(id:string){
+    const{error} = await supabase
+        .from('set')
+        .delete()
+        .eq(id,'id')
+}

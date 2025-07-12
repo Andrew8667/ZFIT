@@ -1,13 +1,14 @@
-import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,Button, SafeAreaView,Alert,Image, TextInput,TouchableOpacity, Modal } from 'react-native'
+import { StyleSheet, ScrollView, FlatList,TouchableWithoutFeedback, View, Text,Button, SafeAreaView,Alert,Image, TextInput,TouchableOpacity, Modal, ViewStyle } from 'react-native'
 
 /**
  * Component for the search bar
  * @param param0 setSearchText allows us to keep track of what is being typed in the search bar
+ * action determines if the filter modal is visible or not
  * @returns a search bar with a filter option
  */
-const Search = function Search({setSearchText,searchText,action}:{setSearchText:(item:string)=>void,searchText:string,action:(input:boolean)=>void}){
+const Search = function Search({setSearchText,searchText,action,extraStyle}:{setSearchText:(item:string)=>void,searchText:string,action:(input:boolean)=>void,extraStyle?:ViewStyle}){
     return(
-        <View style = {styles.container}>
+        <View style = {[styles.container,extraStyle]}>
             <TextInput style={styles.textStyle}
                 placeholder='Search by title'
                 placeholderTextColor='#B2B2B2'
