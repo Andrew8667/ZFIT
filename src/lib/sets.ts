@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { workoutSliceType } from '../types/exercise';
+import { myExercises, workoutSliceType } from '../types/exercise';
 import { addWorkout } from './workouts';
 
 /**
@@ -13,7 +13,7 @@ export async function addToSet(workout:workoutSliceType,inProgress:boolean){
     const sets = []
     for(let i = 0 ; i < workout.exercises.length;i++){
         for(let j = 0 ; j < workout.exercises[i].sets.length; j++){
-            sets.push({exercise:workout.exercises[i].name,set_num:workout.exercises[i].sets[j].setNum,lbs:workout.exercises[i].sets[j].lbs,reps:workout.exercises[i].sets[j].reps,id:curWorkout.id})
+            sets.push({exercise:workout.exercises[i].name,set_num:workout.exercises[i].sets[j].setNum,lbs:workout.exercises[i].sets[j].lbs,reps:workout.exercises[i].sets[j].reps,recorded:workout.exercises[i].sets[j].recorded,id:curWorkout.id})
         }
     }
     const { error } = await supabase
@@ -25,6 +25,23 @@ export async function addToSet(workout:workoutSliceType,inProgress:boolean){
 }
 
 /**
+ * Gets all the sets in the set table
+ * @param user the uuid of the current session user
+ * @returns list of the rows from set table
+ */
+ export async function getSets(user:string){
+    const{data,error} = await supabase
+        .from('set')
+        .select('*')
+        .eq('userid','349fcb09-99be-4732-a4c4-00ebf9d998e3')
+    if(error){
+        console.log('Error getting sets',error)
+        return []
+    }
+    return data
+}
+
+/**
  * Deletes sets from sets table given the id
  * @param id of sets to be deleted
  */
@@ -33,4 +50,68 @@ export async function deleteSets(id:string){
         .from('set')
         .delete()
         .eq(id,'id')
+}
+
+/**
+ * Finds all the exerc
+ * @param user the userid corresponding to the exercises we are searching for
+ * @param setExerciseList populates exercise list in My Exercises.tsx
+ */
+export async function getExercises(user:string,setMyExercises:(input:myExercises[])=>void){
+    const {data,error} = await supabase
+        .from('set')
+        .select('*')
+        .eq('userid',user)
+        .eq('recorded',true)
+    if(error){
+        console.log('Error getting users exercise list', error)
+    } else {
+        const exerciseList:myExercises[] = []
+        data.forEach(row=>{
+            let exists =false
+            exerciseList.forEach(exercise=>{
+                if(exercise.name === row.exercise){
+                    exercise.recordedSets.push({
+                        reps:row.reps,
+                        lbs:row.lbs,
+                        created_at:row.created_at,
+                        setid:row.setid,
+                    })
+                    exists = true
+                }
+            })
+            if(!exists){
+                exerciseList.push({
+                    name:row.exercise,
+                    setid:row.setid,
+                    recordedSets:[
+                        {
+                            reps:row.reps,
+                            lbs:row.lbs,
+                            created_at:row.created_at,
+                            setid:row.setid,
+                        }
+                    ]
+                })
+                exists=false
+            }
+        })
+        setMyExercises(exerciseList)
+    }
+}
+
+/**
+ * Sets the recorded status of set
+ * @param setid the id of the set we want to update
+ * @param recorded true or false 
+ */
+export async function setRecorded(setid:string,recorded:boolean){
+    const {data,error} = await supabase
+        .from('set')
+        .update({recorded})
+        .eq('setid',setid)
+        .select()
+    if(error){
+        console.log('Error updating recorded',error)
+    }
 }

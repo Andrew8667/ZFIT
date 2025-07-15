@@ -2,7 +2,7 @@ import { StyleSheet,ScrollView,View, Text, FlatList,Button,SafeAreaView,Alert,Im
 import {useSelector,useDispatch} from 'react-redux'
 import type RootState from '../store/store'
 import { singleExercise,setsType } from '../types/exercise'
-import {addSet,clearWorkout,updateTitle,updateReps,addExercise,deleteSet,removeExercise, updateLbs} from '../store/workoutSlice' //workout reducer functions
+import {updateRecordedStatus,addSet,clearWorkout,updateTitle,updateReps,addExercise,deleteSet,removeExercise, updateLbs} from '../store/workoutSlice' //workout reducer functions
 import CustomText from './CustomText'
 import CustomButton from './CustomButton'
 
@@ -22,12 +22,12 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
                 <CustomText text={item.name.toUpperCase()} textStyle={{fontWeight:700,fontSize:20,color:'#FFFFFF',marginLeft:10}}></CustomText>
             </View>
             <View style={styles.categoriesContainer}>
-                <CustomText text='Set' textStyle={{width:45,fontWeight:700,fontSize:14,color:'#FFFFFF'}}></CustomText>
-                <CustomText text='lbs' textStyle={{width:45,fontWeight:700,fontSize:14,color:'#FFFFFF'}}></CustomText>
-                <CustomText text='Reps' textStyle={{width:45,fontWeight:700,fontSize:14,color:'#FFFFFF'}}></CustomText>
-                <CustomText text='Delete' textStyle={{width:45,fontWeight:700,fontSize:14,color:'#FFFFFF'}}></CustomText>
+                <CustomText text='Set' textStyle={styles.categoryStyles}></CustomText>
+                <CustomText text='lbs' textStyle={styles.categoryStyles}></CustomText>
+                <CustomText text='Reps' textStyle={styles.categoryStyles}></CustomText>
+                <CustomText text='Delete' textStyle={styles.categoryStyles}></CustomText>
+                <CustomText text='Record?' textStyle={styles.categoryStyles}></CustomText>
             </View>
-            <ScrollView >
                 {item.sets.map((set) => (
                     <View key={set.setNum} style={styles.inputContainer}>
                         <View style={[styles.inputBox,{backgroundColor:'#FFFFFF'}]}>
@@ -57,12 +57,18 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
                         </View>
                         <View style={[styles.inputBox,{backgroundColor:'#f3a4a2'}]}>
                             <TouchableOpacity style = {{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'}} onPress={()=>dispatch(deleteSet(item.name + ',' + set.setNum))}>
-                                <Image source={require('../../assets/x.png')}></Image>
+                                <Image source={require('../../assets/x.png')} style={{width:10,height:10}}></Image>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={styles.inputBox}>
+                            <TouchableOpacity style={styles.record} onPress={()=>{dispatch(updateRecordedStatus(item.name + ':' + set.setNum + ':' + set.recorded))}}>
+                            {set.recorded 
+                                ? <Image source={require('../../assets/checkedBoxless.png')} style={styles.checkedBoxlessStyle} /> 
+                                : null}                           
                             </TouchableOpacity>
                         </View>
                     </View>
                 ))}
-            </ScrollView>     
             <View style={styles.exerciseBtns}>
                 <CustomButton text='Add Set' extraBtnDesign=    {{backgroundColor:'#FFFFFF',width:150,height:20}}
                     extraTxtDesign={{color:'#696969',fontWeight:700}}
@@ -110,27 +116,28 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     categoriesContainer:{
-        width:360,
+        width:'100%',
         height:50,
         marginLeft:10,
         flexDirection:'row',
-        justifyContent:'space-between',
+        justifyContent:'space-evenly',
         alignItems:'center'
     },
     inputContainer:{
-        width:360,
+        width:'100%',
         marginLeft:10,
         height:30,
         flexDirection:'row',
-        justifyContent:'space-between',
+        justifyContent:'space-evenly',
         alignItems:'center',
     },
     inputBox:{
-      width: 56,
+      width: 60,
       height:20,
       justifyContent:'center',
       alignItems:'center',
-      borderRadius:10
+      borderRadius:10,
+      marginRight:15
     },
     fillContainer:{
         width:'100%',
@@ -144,8 +151,24 @@ const styles = StyleSheet.create({
         justifyContent:'space-evenly',
         alignItems:'center'
     },
-    exerciseBtn:{
-
+    record:{
+        width:20,
+        height:20,
+        borderWidth:1,
+        borderColor:'#000000',
+        backgroundColor:'#FFFFFF',
+        justifyContent:'center',
+        alignItems:'center'
+    },
+    categoryStyles:{
+        width:60,
+        fontWeight:700,
+        fontSize:14,
+        color:'#FFFFFF'
+    },
+    checkedBoxlessStyle:{
+        width:'90%',
+        height:'90%',
     }
 })
 

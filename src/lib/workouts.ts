@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
 import { workoutReturn, workoutSliceType } from '../types/exercise';
+import { v4 as uuidv4 } from 'uuid'; // npm install uuid
 
 /**
  * Adds workout to the database
@@ -52,20 +53,24 @@ export async function getWorkouts(inprogress:boolean){
 }
 
 /**
- * Gets all the sets in the set table
- * @param user the uuid of the current session user
- * @returns list of the rows from set table
+ * Used to keep track of weekly workout goal
+ * @param startOfWeek date of the start of this week
+ * @param endOfWeek date of the end of this week
+ * @returns the number of workouts user has completed this week
  */
-export async function getSets(user:string){
-    const{data,error} = await supabase
-        .from('set')
-        .select('*')
-        .eq('userid','349fcb09-99be-4732-a4c4-00ebf9d998e3') //change this to the actual user later
+export async function getNumWeekWorkouts(setNumOfWorkouts:(input:number)=>void,startOfWeek:string,endOfWeek:string){
+    const {count,error} = await supabase
+        .from('workout')
+        .select('*',{count:'exact',head:true})
+        .eq('user','349fcb09-99be-4732-a4c4-00ebf9d998e3') //change this to the actual user later
+        .gte('date',startOfWeek)
+        .lte('date',endOfWeek)
     if(error){
-        console.log('Error getting sets',error)
-        return []
+        console.log('Error getting number of exercises in the week',error)
+        setNumOfWorkouts(0)
+    } else {
+        setNumOfWorkouts(count??0)
     }
-    return data
 }
 
 /**
@@ -78,3 +83,5 @@ export async function deleteWorkout(id:string){
         .delete()
         .eq('id',id)
 }
+
+

@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
  * -extra style allows for optional customization of background outside the component
  * @returns 
  */
-const Background = function Background({children,extraStyle}:{children:ReactNode,extraStyle?:ViewStyle}){
+const Background = function Background({children,extraStyle}:{children:ReactNode|ReactNode[],extraStyle?:ViewStyle}){
     return(
         <LinearGradient
             colors = {['#1E89DD','#E9F5FE']}

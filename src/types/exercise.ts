@@ -39,7 +39,7 @@ export type singleExercise = {
 }
 
 export type setsType = {
-    setNum:number,lbs:number,reps:number
+    setNum:number,lbs:number,reps:number,recorded:boolean
 }
 
 export type workoutReturn = {
@@ -61,5 +61,12 @@ export type setReturn = {
     created_at:string,
     lbs:number,
     reps:number,
-    useid:string
+    userid:string,
+    recorded:boolean
+}
+
+export type myExercises = {
+    name:string,
+    setid:string,
+    recordedSets:{reps:number,lbs:number, created_at:string,setid:string}[]
 }

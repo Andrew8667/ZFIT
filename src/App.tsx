@@ -13,9 +13,10 @@ import Archives from './screens/Archives'
 import Create from './screens/Create'
 import Progress from './screens/Progress'
 import AddExercise from './screens/AddExercise' 
-import MyWorkout from './screens/MyWorkout' 
+import MyExercises from './screens/MyExercises';
 import {Provider} from "react-redux";
 import {store} from './store/store'
+import MyWorkout from './screens/MyWorkout';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,7 +40,7 @@ export default function App() {
   return (
     <Provider store={store}>
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Archives">
+        <Stack.Navigator initialRouteName="MyExercises">
         <Stack.Screen
           name="Login"
           component={Login}
@@ -78,6 +79,11 @@ export default function App() {
         <Stack.Screen 
           name="MyWorkout" 
           component={MyWorkout} 
+          options={{ headerShown: false,animation: 'none' }}
+        />
+        <Stack.Screen 
+          name="MyExercises" 
+          component={MyExercises} 
           options={{ headerShown: false,animation: 'none' }}
         />
       </Stack.Navigator>

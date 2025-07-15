@@ -8,7 +8,8 @@ import NavBar from '../components/NavBar'
 import Background from '../components/Background'
 import CustomText from '../components/CustomText';
 import CustomButton from '../components/CustomButton';
-import { getSets, getWorkouts } from '../lib/workouts';
+import { getWorkouts } from '../lib/workouts';
+import { getSets } from '../lib/sets';
 import { filteredWorkouts, getFullWorkouts, getMusclesList } from '../utils/workoutHelpers';
 import StoredWorkouts from '../components/StoredWorkouts';
 import { exercise, workoutSliceType, workoutSliceTypeWithId } from '../types/exercise';

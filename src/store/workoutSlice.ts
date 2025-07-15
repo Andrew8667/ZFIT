@@ -34,6 +34,7 @@ action.payload of the form name:primarymuscle*/}
                     setNum:1,
                     lbs:0,
                     reps:0,
+                    recorded:false //each set starts off as not recorded
                 }]
             };
             let exerciseExists = false;
@@ -58,11 +59,14 @@ action.payload of the form name:primarymuscle*/}
         addSet:(state,action)=>{ {/**Adds set to exercise */}
             state.exercises.forEach((exercise)=>{
                 if(exercise.name === action.payload){
+                    //find the last set
+                    const lastSet = exercise.sets[exercise.sets.length-1]
                     exercise.sets.push(
                         {
                             setNum:exercise.sets.length+1,
-                            lbs:0,
-                            reps:0
+                            lbs:lastSet.lbs,
+                            reps:lastSet.reps,
+                            recorded:false
                         }
                     );
                 }
@@ -144,6 +148,25 @@ action.payload of the form name:primarymuscle*/}
                 }
             }
         },
+        updateRecordedStatus:(state,action)=>{
+            //action should include the exercise name and set number "name:setNum:status"
+            const name = action.payload.split(':')[0]
+            const setNum = parseInt(action.payload.split(':')[1])
+            const status = action.payload.split(':')[2]
+            state.exercises.forEach(exercise=>{
+                if(exercise.name === name){
+                    exercise.sets.forEach(set=>{
+                        if (set.setNum === setNum){
+                            if (status === 'true'){
+                                set.recorded = false
+                            } else {
+                                set.recorded = true
+                            }
+                        }
+                    })
+                }
+            })
+        },
         updateTitle:(state,action)=>{{/**Whenever user updates the title of workout in myworkout, it updates workout in slice*/}
             state.title = action.payload
         },
@@ -192,5 +215,5 @@ action.payload of the form name:primarymuscle*/}
     }
 });
 
-export const {updateDate,updateDuration,updateMusclegroups,updateNotes, populateWorkout,clearWorkout,updateTitle,addExercise,addSet,deleteSet,removeExercise,updateLbs,updateReps} = workoutSlice.actions;
+export const {updateRecordedStatus, updateDate,updateDuration,updateMusclegroups,updateNotes, populateWorkout,clearWorkout,updateTitle,addExercise,addSet,deleteSet,removeExercise,updateLbs,updateReps} = workoutSlice.actions;
 export default workoutSlice.reducer;

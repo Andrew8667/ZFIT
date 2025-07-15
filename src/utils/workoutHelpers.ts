@@ -1,9 +1,9 @@
-import { exercise, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
+import { exercise, myExercises, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
 import { supabase } from "../lib/supabase";
-import { addToSet } from "../lib/sets";
-import { getSets, getWorkouts } from "../lib/workouts";
+import {getSets, addToSet } from "../lib/sets";
+import { getWorkouts } from "../lib/workouts";
 import ExerciseFlatlist from "../components/ExerciseFlatlist";
 import { fetchData } from "../api/exercises";
 /**
@@ -167,7 +167,8 @@ export async function getFullWorkouts(inprogress:boolean){
                 workoutData.exercises.find((exercise:singleExercise)=>exercise.name===set.exercise)?.sets.push({
                     setNum:set.set_num,
                     lbs:set.lbs,
-                    reps:set.reps
+                    reps:set.reps,
+                    recorded:set.recorded
                 })
             } else {
                 workoutData.exercises.push({
@@ -175,7 +176,8 @@ export async function getFullWorkouts(inprogress:boolean){
                     sets:[{
                         setNum:set.set_num,
                         lbs:set.lbs,
-                        reps:set.reps
+                        reps:set.reps,
+                        recorded: set.recorded
                     }]
                 })
             }
@@ -212,3 +214,26 @@ export function filteredWorkouts(searchText:string,dateOrdering:string,durationR
     sortedWorkouts = sortedWorkouts.filter(workout=>selectedMuscles.every(muscle=>workout.musclegroups.includes(muscle)))//filter by muscle group
     return sortedWorkouts
 }
+
+/**
+ * Gets the starting and ending date of the week
+ * @param date the current date
+ * @returns the first and last day of the week in the form 'YYYY-MM-DD'
+ */
+export function getStartAndEndOfWeek() {
+    const date = new Date()
+    const dayOfWeek = date.getDay(); // 0 (Sun) to 6 (Sat)
+  
+    const start = new Date(date);
+    start.setDate(date.getDate() - dayOfWeek);
+  
+    const end = new Date(date);
+    end.setDate(date.getDate() + (6 - dayOfWeek));
+  
+    const format = (day:Date) => day.toISOString().split('T')[0];
+  
+    return {
+      startOfWeek: format(start),
+      endOfWeek: format(end),
+    };
+  }
