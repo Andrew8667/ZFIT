@@ -1,5 +1,6 @@
 import { supabase } from '../lib/supabase';
-import { myExercises, workoutSliceType } from '../types/exercise';
+import { myExercises, setReturn, workoutSliceType } from '../types/exercise';
+import { getStartAndEndOfWeek } from '../utils/workoutHelpers';
 import { addWorkout } from './workouts';
 
 /**
@@ -83,7 +84,6 @@ export async function getExercises(user:string,setMyExercises:(input:myExercises
             if(!exists){
                 exerciseList.push({
                     name:row.exercise,
-                    setid:row.setid,
                     recordedSets:[
                         {
                             reps:row.reps,
@@ -115,3 +115,30 @@ export async function setRecorded(setid:string,recorded:boolean){
         console.log('Error updating recorded',error)
     }
 }
+
+export async function getSetList(user:string){
+    const {data,error} = await supabase
+        .from('set')
+        .select('*')
+        .eq('userid',user)
+    if(error){
+        console.log("could not get the set list",error)
+        return []
+    } else {
+        return data
+    }
+}
+
+export async function getSetExercise(user:string){
+    const {data,error} = await supabase
+        .from('set')
+        .select('*,workout(date)')
+        .eq('userid',user)
+    if(error){
+        console.log("could not get the set list",error)
+        return []
+    } else {
+        return data
+    }
+}
+

@@ -17,7 +17,7 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
 
     const keyExtractor = (item: singleExercise, index: number) => index.toString();
     const renderItem = ({ item }: { item: singleExercise }) => (
-        <View style={styles.exerciseContainer}>
+        <ScrollView style={styles.exerciseContainer}>
             <View style={styles.titleContainer}>
                 <CustomText text={item.name.toUpperCase()} textStyle={{fontWeight:700,fontSize:20,color:'#FFFFFF',marginLeft:10}}></CustomText>
             </View>
@@ -79,7 +79,7 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
                     action={()=>dispatch(removeExercise(item.name))}
                     ></CustomButton>
             </View>
-      </View>
+      </ScrollView>
     );
     return(
         <View style={styles.flatlistContainer}>

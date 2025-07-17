@@ -1,5 +1,5 @@
 import { supabase } from '../lib/supabase';
-import { workoutReturn, workoutSliceType } from '../types/exercise';
+import { mergedList, workoutReturn, workoutSliceType } from '../types/exercise';
 import { v4 as uuidv4 } from 'uuid'; // npm install uuid
 
 /**
@@ -82,6 +82,19 @@ export async function deleteWorkout(id:string){
         .from('workout')
         .delete()
         .eq('id',id)
+}
+
+export async function getMergedTable(user:string){
+    const {data,error} = await supabase
+        .from('workout')
+        .select('*,set(*)')
+        .eq('user',user)
+    if(error){
+        console.log("could not get the merged list",error)
+        return []
+    } else {
+        return data
+    }
 }
 
 

@@ -1,11 +1,12 @@
-import { exercise, myExercises, setReturn, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
+import { exercise, mergedList, myExercises, setReturn, setReturnWithDate, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
 import { supabase } from "../lib/supabase";
-import {getSets, addToSet } from "../lib/sets";
-import { getWorkouts } from "../lib/workouts";
+import {getSets, addToSet, getSetList, getSetExercise } from "../lib/sets";
+import { getMergedTable, getWorkouts } from "../lib/workouts";
 import ExerciseFlatlist from "../components/ExerciseFlatlist";
 import { fetchData } from "../api/exercises";
+import { start } from "repl";
 /**
  * Gets all the unique levels of each exercise in the list
  * @param exerciseList list of all the exercises and their info
@@ -237,3 +238,89 @@ export function getStartAndEndOfWeek() {
       endOfWeek: format(end),
     };
   }
+
+export async function getUniqueExerciseList(user:string,setUniqueExercises:(input:string[])=>void){
+    const setList:setReturn[] = await getSetList(user)
+    const uniqueExercises = new Set<string>();
+    setList.forEach(set=>{
+        uniqueExercises.add(set.exercise)
+    })
+    const uniqueExerciseList = Array.from(uniqueExercises)
+    setUniqueExercises(uniqueExerciseList)
+}
+
+export async function getChartData(user:string,exercise:string,year:number,month:number, setDatesList:(input:string[])=>void, setVolumeList:(input:number[])=>void){
+    const {start,end} = getMonthRange(year,month)
+    const setList:setReturnWithDate[] = await getSetExercise(user);
+    const filteredList:setReturnWithDate[] = []
+    setList.forEach(set=>{
+        if(set.exercise === exercise){
+            filteredList.push(set)
+        }
+    })
+    const dates:string[] = []
+    const values:number[] = []
+    let curDay = new Date(start);
+    let endDay = new Date(start)
+    let week = 1;
+    while(curDay.getUTCMonth() === month){
+        endDay.setDate(endDay.getDate() + 6)
+        let sum = 0;
+        const filteredFilteredList = filteredList.filter(set=>{
+            if(new Date(set.workout.date) >= curDay && new Date(set.workout.date) <= endDay){
+                return set
+            }
+        })
+        filteredFilteredList.forEach(set=>{
+            sum+= set.lbs * set.reps
+        })
+        dates.push('Week ' + week)
+        week++
+        values.push(sum)
+        curDay.setDate(curDay.getDate()+6)
+    }
+    setDatesList(dates)
+    setVolumeList(values)
+} 
+
+function getMonthRange(year: number, month: number) {
+    const start = new Date(year, month, 1)
+    const end = new Date(year, month + 1, 0)
+  
+    return {
+      start: start.toISOString().split('T')[0], 
+      end: end.toISOString().split('T')[0],   
+    }
+  }
+
+export async function getWeekStats(user:string,setTotalLbs:(inputs:number)=>void,setTotalDuration:(inputs:number)=>void,setTotalSets:(inputs:number)=>void,setTotalReps:(inputs:number)=>void,setStreak:(inputs:number)=>void){
+    const data:mergedList[] = await getMergedTable(user)
+    const {startOfWeek,endOfWeek} = getStartAndEndOfWeek()
+    const filteredData:mergedList[] = data.filter(item=>new Date(item.date) >= new Date(startOfWeek) && new Date(item.date) <= new Date(endOfWeek))
+    let totalLbs = 0
+    let totalReps = 0
+    const totalDuration = filteredData.reduce((sum, item) => sum + item.duration,0)
+    const totalSets = filteredData.length
+    filteredData.forEach(item=>{
+        totalLbs+=item.set[0].lbs
+        totalReps+=item.set[0].reps
+    })
+    let date = new Date()
+    let streak = 0
+    let hasStreak = true
+    while(hasStreak){
+        const result = filteredData.find(item=>new Date(item.date).getFullYear() === date.getFullYear() && new Date(item.date).getDay() === date.getDay() && new Date(item.date).getMonth() === date.getMonth())
+        if(result){
+            streak++
+            date.setDate(date.getDate()-1)
+        } else {
+            hasStreak=false
+        }
+    }
+    setStreak(streak)
+    setTotalLbs(totalLbs)
+    setTotalDuration(totalDuration),
+    setTotalSets(totalSets)
+    setTotalReps(totalReps)
+}
+  

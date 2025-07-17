@@ -62,11 +62,50 @@ export type setReturn = {
     lbs:number,
     reps:number,
     userid:string,
-    recorded:boolean
+    recorded:boolean,
+    setid:string
 }
+
+export type setReturnWithDate = {
+    id:string,
+    exercise:string,
+    set_num:number,
+    created_at:string,
+    lbs:number,
+    reps:number,
+    userid:string,
+    recorded:boolean,
+    setid:string,
+    workout:{
+        date:Date
+    }
+}
+
+export type mergedList ={
+    id:string,
+    created_at:string,
+    user:string,
+    title:string,
+    inprogress:boolean,
+    date:Date,
+    duration:number,
+    musclegroups:string,
+    notes:string,
+    set:{
+        id:string,
+        exercise:string,
+        set_num:number,
+        created_at:string,
+        lbs:number,
+        reps:number,
+        userid:string,
+        recorded:boolean,
+        setid:string,
+    }[]
+}
+
 
 export type myExercises = {
     name:string,
-    setid:string,
     recordedSets:{reps:number,lbs:number, created_at:string,setid:string}[]
 }

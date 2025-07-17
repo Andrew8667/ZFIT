@@ -6,12 +6,12 @@ import { supabase } from '../lib/supabase'
 import { useEffect } from 'react'
 
 const MyExerciseList = function MyExerciseList({myExercises,setMyExercises}:{myExercises:myExercises[],setMyExercises:(input:myExercises[])=>void}){
-
+    
     return(
         <ScrollView style={styles.container}>
             {myExercises.map(exercise=>{
                 return(
-                    <View key={exercise.setid} style = {styles.exerciseContainer}>
+                    <View key={exercise.name} style = {styles.exerciseContainer}>
                         <CustomText text={exercise.name} textStyle={styles.exerciseName}></CustomText>
                             {exercise.recordedSets.map(set=>{
                                 const data = 'lbs: ' + set.lbs + ' reps: ' + set.reps + '\nCreated on: ' + new Date(set.created_at).toLocaleDateString() + ' ' + new Date(set.created_at).toLocaleTimeString()

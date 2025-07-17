@@ -7,11 +7,13 @@ import NavBar from '../components/NavBar';
 import CustomText from '../components/CustomText';
 import { getStartAndEndOfWeek } from '../utils/workoutHelpers';
 import { getNumWeekWorkouts } from '../lib/workouts';
+import Chart from '../components/Chart';
 
 const Progress = function Progress({navigation}:{navigation:any}){ 
     return(
         <Background>
             <CustomText text='Progress' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
+            <Chart></Chart>
             <NavBar navigation={navigation} curScreen='progress'></NavBar>
         </Background>
     )
