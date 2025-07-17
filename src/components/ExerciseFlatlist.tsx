@@ -94,10 +94,11 @@ const styles = StyleSheet.create({
         color:"#696969"
     },
     textContainer:{
-        width:150,
+        width:190,
         height:'100%',
         alignItems:'center',
-        justifyContent:'space-evenly'
+        justifyContent:'space-evenly',
+        overflow:'hidden',
     }
 });
 

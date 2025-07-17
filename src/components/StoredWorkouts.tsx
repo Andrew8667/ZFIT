@@ -9,6 +9,15 @@ import { workoutSliceType, workoutSliceTypeWithId } from '../types/exercise'
 import { getFullWorkouts } from '../utils/workoutHelpers'
 import CustomText from './CustomText'
 
+/**
+ * A scroll view containing finished or in progress workouts
+ * @param param0 isHorizontal tells you whether or not scroll view should be horizontal or not
+ * -type is whether we are looking for inprogress or finished workouts
+ * -container stye provides custom styling for the workout containers
+ * -workouts contains a list of workouts to display
+ * -navigation allows us to navigate to other screens
+ * @returns scrollable view of finished or inprogress workouts
+ */
 const StoredWorkouts = function StoredWorkouts({isHorizontal,type,containerStyle,workouts,navigation}:{isHorizontal:boolean,type:string,containerStyle:ViewStyle,workouts:workoutSliceTypeWithId[],navigation:NavigationProp<any>}){
     const dispatch = useDispatch()
     /**

@@ -108,7 +108,6 @@ const styles = StyleSheet.create({
     },
     exerciseContainer:{
         width:'100%',
-        height:223,
     },
     titleContainer:{
         width:'100%',

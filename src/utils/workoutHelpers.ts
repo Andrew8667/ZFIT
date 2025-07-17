@@ -2,7 +2,7 @@ import { exercise, mergedList, myExercises, setReturn, setReturnWithDate, setsTy
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
 import { supabase } from "../lib/supabase";
-import {getSets, addToSet, getSetList, getSetExercise } from "../lib/sets";
+import {getSets, addToSet, getSetExercise } from "../lib/sets";
 import { getMergedTable, getWorkouts } from "../lib/workouts";
 import ExerciseFlatlist from "../components/ExerciseFlatlist";
 import { fetchData } from "../api/exercises";
@@ -146,10 +146,10 @@ export const recordWorkout = async function recordWorkout(workout:workoutSliceTy
  * @param inprogress workout can either be in progress or finished
  * @returns an array containing filtered workouts
  */
-export async function getFullWorkouts(inprogress:boolean){
+export async function getFullWorkouts(user:string,inprogress:boolean){
     const workoutArr: workoutSliceTypeWithId[]= []
-    const workouts:workoutReturn[]= await getWorkouts(inprogress)
-    const sets:setReturn[]= await getSets('')
+    const workouts:workoutReturn[]= await getWorkouts(user,inprogress)
+    const sets:setReturn[]= await getSets(user)
     const filteredWorkouts = workouts.filter(workout=>workout.inprogress===inprogress) //filtered by inprogress or not
     filteredWorkouts.forEach(workout=>{
         const workoutData:workoutSliceTypeWithId = {
@@ -164,7 +164,6 @@ export async function getFullWorkouts(inprogress:boolean){
         const filteredSets = sets.filter(set=>set.id===workout.id)
         filteredSets.forEach(set=>{
             if(workoutData.exercises.find((exercise:singleExercise)=>exercise.name===set.exercise)){
-                //exercise already inside
                 workoutData.exercises.find((exercise:singleExercise)=>exercise.name===set.exercise)?.sets.push({
                     setNum:set.set_num,
                     lbs:set.lbs,
@@ -185,7 +184,6 @@ export async function getFullWorkouts(inprogress:boolean){
         })
         workoutArr.push(workoutData)
     })
-    //return array of workouts
     return(workoutArr)
 }
 
@@ -239,8 +237,13 @@ export function getStartAndEndOfWeek() {
     };
   }
 
+  /**
+   * Sets the unique exercise list with the exercises user has completed
+   * @param user the user of the current session
+   * @param setUniqueExercises sets the unique exerciselist
+   */
 export async function getUniqueExerciseList(user:string,setUniqueExercises:(input:string[])=>void){
-    const setList:setReturn[] = await getSetList(user)
+    const setList:setReturn[] = await getSets(user)
     const uniqueExercises = new Set<string>();
     setList.forEach(set=>{
         uniqueExercises.add(set.exercise)
@@ -249,6 +252,15 @@ export async function getUniqueExerciseList(user:string,setUniqueExercises:(inpu
     setUniqueExercises(uniqueExerciseList)
 }
 
+/**
+ * Populates the data that goes in the progress screen chart
+ * @param user of the current session
+ * @param exercise we want data for
+ * @param year of when we want data to be from
+ * @param month of when we want data to be from
+ * @param setDatesList dates contain the numbered weeks and are on x axis
+ * @param setVolumeList contains the total volumes for each week
+ */
 export async function getChartData(user:string,exercise:string,year:number,month:number, setDatesList:(input:string[])=>void, setVolumeList:(input:number[])=>void){
     const {start,end} = getMonthRange(year,month)
     const setList:setReturnWithDate[] = await getSetExercise(user);
@@ -261,10 +273,10 @@ export async function getChartData(user:string,exercise:string,year:number,month
     const dates:string[] = []
     const values:number[] = []
     let curDay = new Date(start);
-    let endDay = new Date(start)
+    let endDay = new Date(start);
+    endDay.setDate(endDay.getDate()+6)
     let week = 1;
-    while(curDay.getUTCMonth() === month){
-        endDay.setDate(endDay.getDate() + 6)
+    while(endDay.getUTCMonth() === month){
         let sum = 0;
         const filteredFilteredList = filteredList.filter(set=>{
             if(new Date(set.workout.date) >= curDay && new Date(set.workout.date) <= endDay){
@@ -278,11 +290,18 @@ export async function getChartData(user:string,exercise:string,year:number,month
         week++
         values.push(sum)
         curDay.setDate(curDay.getDate()+6)
+        endDay.setDate(endDay.getDate()+6)
     }
     setDatesList(dates)
     setVolumeList(values)
 } 
 
+/**
+ * Gets the beginning and end of a month of a specific year
+ * @param year of when we want exercise data for
+ * @param month of when we want exercise data for
+ * @returns the date of the start and end of the month
+ */
 function getMonthRange(year: number, month: number) {
     const start = new Date(year, month, 1)
     const end = new Date(year, month + 1, 0)
@@ -293,6 +312,15 @@ function getMonthRange(year: number, month: number) {
     }
   }
 
+  /**
+   * Gets the weekly stats of the user to be displayed on the home page
+   * @param user of the current session
+   * @param setTotalLbs total lbs lifted this week
+   * @param setTotalDuration total duration of workouts this week
+   * @param setTotalSets total sets performed this week
+   * @param setTotalReps total reps performed this week
+   * @param setStreak Number of days worked out in a row
+   */
 export async function getWeekStats(user:string,setTotalLbs:(inputs:number)=>void,setTotalDuration:(inputs:number)=>void,setTotalSets:(inputs:number)=>void,setTotalReps:(inputs:number)=>void,setStreak:(inputs:number)=>void){
     const data:mergedList[] = await getMergedTable(user)
     const {startOfWeek,endOfWeek} = getStartAndEndOfWeek()
@@ -306,7 +334,9 @@ export async function getWeekStats(user:string,setTotalLbs:(inputs:number)=>void
         totalReps+=item.set[0].reps
     })
     let date = new Date()
-    let streak = 0
+    const result = filteredData.find(item=>new Date(item.date).getFullYear() === date.getFullYear() && new Date(item.date).getDay() === date.getDay() && new Date(item.date).getMonth() === date.getMonth())
+    let streak = result?1:0
+    date.setDate(date.getDate()-1)
     let hasStreak = true
     while(hasStreak){
         const result = filteredData.find(item=>new Date(item.date).getFullYear() === date.getFullYear() && new Date(item.date).getDay() === date.getDay() && new Date(item.date).getMonth() === date.getMonth())

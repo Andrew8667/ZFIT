@@ -33,7 +33,7 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         <TextInput style={styles.titleTxtInput} value={workout.title} placeholder='My Workout' placeholderTextColor={'#696969'}
                         onChangeText={(title)=>{dispatch(updateTitle(title))}}></TextInput>
                     </View> 
-                    <View style={styles.inputContainer}> {/**Date of the workout*/}
+                    <View style={styles.inputContainer}> 
                         <CustomText text='Date: ' textStyle={{color:'#000000',fontSize:20,fontWeight:600}}></CustomText>
                         <DateTimePicker
                         value={new Date(workout.date)}
@@ -46,7 +46,7 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         }}
                         ></DateTimePicker>  
                     </View>
-                    <View style={styles.inputContainer}> {/**Duration of workout */}
+                    <View style={styles.inputContainer}> 
                         <CustomText text='Duration: ' textStyle={{color:'#000000',fontSize:20,fontWeight:600}}></CustomText>
                         <TextInput style={styles.duration} value={workout.duration.toString()} placeholder='0' placeholderTextColor={'#696969'}
                         onChangeText={(text)=>{
@@ -59,11 +59,11 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         </TextInput> 
                         <CustomText text='mins' textStyle={{color:'#000000',fontSize:20,fontWeight:500,marginLeft:10}}></CustomText> 
                     </View>
-                    <View style={styles.notesContainer}> {/**Notes of the workout */}
+                    <View style={styles.notesContainer}> 
                         <TextInput onChangeText={(text)=>{dispatch(updateNotes(text))}} value={workout.notes} style={styles.notes} multiline={true} placeholder='Notes' placeholderTextColor={'#696969d'}></TextInput>
                     </View>
                 </ScrollView>
-                <View style={styles.btnContainer}> {/**Buttons */}
+                <View style={styles.btnContainer}> 
                     <CustomButton text='Return'
                     extraBtnDesign={{backgroundColor:"#F57C00",width:120,
                     height:35,borderRadius:10}}

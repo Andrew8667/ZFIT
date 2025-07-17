@@ -1,5 +1,5 @@
 import { NavigationProp } from '@react-navigation/native'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import {View,StyleSheet,Text} from 'react-native'
 import Background from '../components/Background'
 import CustomText from '../components/CustomText'
@@ -9,12 +9,21 @@ import { getExercises } from '../lib/sets'
 import { myExercises } from '../types/exercise'
 import { supabase } from '../lib/supabase'
 import { shallowEqual } from 'react-redux'
+import { UserContext } from '../App'
 
+/**
+ * Screen contains recorded sets
+ * Sets can be recorded when they are being created 
+ * Used if set has significance such as a personal record 
+ * @param param0 navigation to other screens
+ * @returns screen containing recorded sets
+ */
 const MyExercises = function MyExercises({navigation}:{navigation:NavigationProp<any>}){
     const [myExercises,setMyExercises] = useState<myExercises[]>([])
+    const userId = useContext(UserContext)
     
       useEffect(()=>{
-        getExercises('349fcb09-99be-4732-a4c4-00ebf9d998e3', setMyExercises)
+        getExercises(userId, setMyExercises)
         const channel = supabase
             .channel('set-channel')
             .on(

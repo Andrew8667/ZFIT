@@ -1,6 +1,5 @@
 import { supabase } from '../lib/supabase';
 import { mergedList, workoutReturn, workoutSliceType } from '../types/exercise';
-import { v4 as uuidv4 } from 'uuid'; // npm install uuid
 
 /**
  * Adds workout to the database
@@ -22,28 +21,16 @@ export async function addWorkout(workout:workoutSliceType,inProgress:boolean){
 }
 
 /**
- * Gets the session's current uuid
- * @returns the user id of the user of current session
- */
-export async function getUserUUID(){
-    const{data:{session},error}=await supabase.auth.getSession();
-    if(error){
-        console.error('Error getting session', error.message)
-        return null
-    }
-    return session?.user?.id;
-}
-
-/**
- * Gets the workouts either in progress or not
+ * Gets workouts of the user
+ * Can filter by workouts that are in progress or not
  * @param inprogress workout can either be in progress or finished
  * @returns a list of rows from database table workouts
  */
-export async function getWorkouts(inprogress:boolean){
+export async function getWorkouts(user:string,inprogress:boolean){
     const{data,error} = await supabase
         .from('workout')
         .select('*')
-        .eq('user','349fcb09-99be-4732-a4c4-00ebf9d998e3') //change this to the actual user later
+        .eq('user',user)
         .eq('inprogress',inprogress)
     if(error){
         console.log('Error getting workouts',error)
@@ -84,6 +71,11 @@ export async function deleteWorkout(id:string){
         .eq('id',id)
 }
 
+/**
+ * Gets all the workout and set data of the current user
+ * @param user of the session
+ * @returns the merged rows from the workout and set table
+ */
 export async function getMergedTable(user:string){
     const {data,error} = await supabase
         .from('workout')

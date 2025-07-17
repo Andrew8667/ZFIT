@@ -13,10 +13,10 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
     {levels:string[],selectedLevel:string,setSelectedLevel:(item:string)=>void,equipment:string[],selectedEquipment:string,setSelectedEquipment:(item:string)=>void,muscles:string[],selectedMuscle:string,setSelectedMuscle:(input:string)=>void, setFilterModalVisible:(input:boolean)=>void
         categories:string[],selectedCategory:string,setSelectedCategory:(item:string)=>void,forces:string[],selectedForce:string,setSelectedForce:(item:string)=>void}){
     return(
-        <View style={styles.backdrop}>{/*Greys out the background*/}
-            <View style={styles.filterContainer}>{/* Box containing all the filters*/}
+        <View style={styles.backdrop}>
+            <View style={styles.filterContainer}>
                 <ScrollView style={styles.scrollView}>
-                    <View style={styles.filterItemContainer}>{/*Difficulty filter*/}
+                    <View style={styles.filterItemContainer}>
                         <CustomText text='Choose Difficulty Level'
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedLevel} onValueChange={(value)=>{setSelectedLevel(value)}}>
@@ -28,7 +28,7 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                             })}
                         </Picker>
                     </View>
-                    <View style={styles.filterItemContainer}>{/*Equipment filter*/}
+                    <View style={styles.filterItemContainer}>
                         <CustomText text='Choose Equipment'
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedEquipment} onValueChange={(value)=>{setSelectedEquipment(value)}}>
@@ -40,7 +40,7 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                             })}
                         </Picker>
                     </View>
-                    <View style={styles.filterItemContainer}>{/*Muscle filter*/}
+                    <View style={styles.filterItemContainer}>
                         <CustomText text='Choose Muscle'
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedMuscle} onValueChange={(value)=>{setSelectedMuscle(value)}}>
@@ -52,7 +52,7 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                             })}
                         </Picker>
                     </View>
-                    <View style={styles.filterItemContainer}>{/*Category filter*/}
+                    <View style={styles.filterItemContainer}>
                         <CustomText text='Choose Category'
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedCategory} onValueChange={(value)=>{setSelectedCategory(value)}}>
@@ -64,7 +64,7 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                             })}
                         </Picker>
                     </View>
-                    <View style={styles.filterItemContainer}>{/*Forces filter*/}
+                    <View style={styles.filterItemContainer}>
                         <CustomText text='Choose Force'
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedForce} onValueChange={(value)=>{setSelectedForce(value)}}>

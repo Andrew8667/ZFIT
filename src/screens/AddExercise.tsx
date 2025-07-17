@@ -17,17 +17,23 @@ import ExerciseInfo from '../components/ExerciseInfo';
 import ExerciseFilter from '../components/ExerciseFilter';
 import { getLevels,getEquipment,getMuscles,getCategories,getForces } from '../utils/workoutHelpers';
 
+/**
+ * Contains exercises and their info
+ * users can add exercise to their workout and alter search and filter the exercises to add
+ * @param param0 navigation to other screens
+ * @returns a screen where users can add exercises to their workout
+ */
 const AddExercise = function AddExercise({navigation}:{navigation:any}){
-    const [exerciseList,setExerciseList] = useState<exercise[]>([]); //list of exercises
-    const [searchText,setSearchText] = useState('');
-    const [exerciseModalVisible,setExerciseModalVisible] = useState(false);
-    const [filterModalVisible,setFilterModalVisible] = useState(false);
-    const [viewExercise,setViewExercise] = useState<exercise|undefined>(undefined)
-    const [selectedLevel,setSelectedLevel] = useState('')
-    const [selectedEquipment,setSelectedEquipment] = useState('')
-    const [selectedMuscle,setSelectedMuscle] = useState('')
-    const [selectedCategory,setSelectedCategory] = useState('')
-    const [selectedForce,setSelectedForce] = useState('')
+    const [exerciseList,setExerciseList] = useState<exercise[]>([]); //list of exercises from exercises.json
+    const [searchText,setSearchText] = useState(''); //keeps track of what is in search bar
+    const [exerciseModalVisible,setExerciseModalVisible] = useState(false); //visibility of exercise info modal
+    const [filterModalVisible,setFilterModalVisible] = useState(false); //visibility of filter modal
+    const [viewExercise,setViewExercise] = useState<exercise|undefined>(undefined) //the exercise that is clicked on
+    const [selectedLevel,setSelectedLevel] = useState('') //level of exercise
+    const [selectedEquipment,setSelectedEquipment] = useState('') //equipment needed for exercise
+    const [selectedMuscle,setSelectedMuscle] = useState('') //muscle hit during workout
+    const [selectedCategory,setSelectedCategory] = useState('') //category of the workout ex strength
+    const [selectedForce,setSelectedForce] = useState('') //force of workout ex pull
 
     useEffect(()=>{ //populates the exercise list when screen loads
         async function loadData(){

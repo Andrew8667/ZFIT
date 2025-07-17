@@ -9,15 +9,20 @@ import { StyleSheet, View, Text, SafeAreaView,ViewStyle,TextStyle } from 'react-
  */
 const CustomText = function CustomText({text,textStyle,action}:{text:string,textStyle?:TextStyle,action?:()=>void}){
     return(
-        <Text style={[styles.text,textStyle]} onPress={action}>
-            {text}
-        </Text>
+        <View style={styles.container}>
+            <Text style={[styles.text,textStyle]} onPress={action}>
+                {text}
+            </Text>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     text:{
         fontFamily:'Inter',
+    },
+    container:{
+        
     }
 })
 

@@ -4,6 +4,11 @@ import CustomText from './CustomText';
 import CustomButton from './CustomButton';
 import DropDownPicker from 'react-native-dropdown-picker';
 
+/**
+ * Filters workout by their date, duration, and muscles worked
+ * @param param0 contains filter info
+ * @returns a filter for workout
+ */
 const WorkoutFilter = function WorkoutFilter({setFilterModalVisible,dateOrdering,setDateOrdering,durationRange,setDurationRange,selectedMuscles,setSelectedMuscles,open,setOpen,items,setItems}:
     {setFilterModalVisible:(input:boolean)=>void,dateOrdering:string,setDateOrdering:(input:string)=>void,durationRange:string,setDurationRange:(input:string)=>void,selectedMuscles:string[],setSelectedMuscles:React.Dispatch<React.SetStateAction<string[]>>,open:boolean,setOpen:React.Dispatch<React.SetStateAction<boolean>>,items:{value:string,label:string}[],setItems:React.Dispatch<React.SetStateAction<Array<{ label: string; value: string }>>>}){
     return(

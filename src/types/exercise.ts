@@ -1,6 +1,9 @@
 import { SwipeRatingProps } from "@rneui/themed"
 
-export type exercise = { //structure of exercise in the list
+/**
+ * structure of the exercises from the api exercise list
+ */
+export type exercise = { 
     name:string,
     force:string,
     level:string,
@@ -14,7 +17,10 @@ export type exercise = { //structure of exercise in the list
     id:string
 }
 
-export type workoutSliceType = {
+/**
+ * This is how workout info is stored in the slice
+ */
+export type workoutSliceType = { 
     title:string,
     date:string,
     duration:number,
@@ -23,7 +29,10 @@ export type workoutSliceType = {
     exercises:singleExercise[]
 }
 
-export type workoutSliceTypeWithId = {
+/**
+ * same as how it is stored in the slice but includes the id of the workout
+ */
+export type workoutSliceTypeWithId = { 
     title:string,
     date:string,
     duration:number,
@@ -33,15 +42,25 @@ export type workoutSliceTypeWithId = {
     id:string
 }
 
+/**
+ * type used to represent an exercise
+ * name is the name of the exercise and sets contain an array of setsType
+ */
 export type singleExercise = {
     name:string,
     sets:setsType[]
 }
 
+/**
+ * Contain the set info such as lbs,set number, reps, and if it is recorded or not
+ */
 export type setsType = {
     setNum:number,lbs:number,reps:number,recorded:boolean
 }
 
+/**
+ * Workout table returns an array of workoutReturn type
+ */
 export type workoutReturn = {
     created_at:string,
     date:string,
@@ -54,6 +73,9 @@ export type workoutReturn = {
     user:string
 }
 
+/**
+ * Set table returns an array of setReturn type
+ */
 export type setReturn = {
     id:string,
     exercise:string,
@@ -81,6 +103,9 @@ export type setReturnWithDate = {
     }
 }
 
+/**
+ * The return type of when we select all from workout merged with set
+ */
 export type mergedList ={
     id:string,
     created_at:string,
@@ -104,7 +129,11 @@ export type mergedList ={
     }[]
 }
 
-
+/**
+ * This is used in my exercises screen
+ * Name is the name of the exercise
+ * RecordedSets contains the reps,lbs,setid, and when set was created
+ */
 export type myExercises = {
     name:string,
     recordedSets:{reps:number,lbs:number, created_at:string,setid:string}[]

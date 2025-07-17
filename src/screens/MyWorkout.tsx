@@ -11,6 +11,11 @@ import WorkoutInfoFlatlist from '../components/WorkoutInfoFlatlist'
 import CustomModal from '../components/CustomModal'
 import FinishingWorkoutDetails from '../components/FinishingWorkoutDetails'
 
+/**
+ * Where users create their workouts
+ * @param param0 navigation to other screens
+ * @returns a screen containing workout info
+ */
 const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
     const [finishingModalVisible,setFinishingModalVisible] = useState(false)//determines whether or not the modal where users can input their final workout details is shown or not
     const [source,setSource] = useState('finish')
@@ -52,7 +57,7 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
             </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
-            <View style={styles.bottomBtnContainer}> {/**Holds the bottom buttons */}
+            <View style={styles.bottomBtnContainer}>
                 <CustomButton text='Return'
                 extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10}}
                 extraTxtDesign={{fontWeight:700,fontSize:14}}

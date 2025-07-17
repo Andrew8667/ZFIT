@@ -34,7 +34,7 @@ export async function addToSet(workout:workoutSliceType,inProgress:boolean){
     const{data,error} = await supabase
         .from('set')
         .select('*')
-        .eq('userid','349fcb09-99be-4732-a4c4-00ebf9d998e3')
+        .eq('userid',user)
     if(error){
         console.log('Error getting sets',error)
         return []
@@ -43,8 +43,9 @@ export async function addToSet(workout:workoutSliceType,inProgress:boolean){
 }
 
 /**
- * Deletes sets from sets table given the id
- * @param id of sets to be deleted
+ * Given the id of a workout that is deleted,
+ * this method deletes the sets of that workout
+ * @param id of the workout that is deleted
  */
 export async function deleteSets(id:string){
     const{error} = await supabase
@@ -54,7 +55,7 @@ export async function deleteSets(id:string){
 }
 
 /**
- * Finds all the exerc
+ * Populates the workouts exercise list
  * @param user the userid corresponding to the exercises we are searching for
  * @param setExerciseList populates exercise list in My Exercises.tsx
  */
@@ -116,19 +117,11 @@ export async function setRecorded(setid:string,recorded:boolean){
     }
 }
 
-export async function getSetList(user:string){
-    const {data,error} = await supabase
-        .from('set')
-        .select('*')
-        .eq('userid',user)
-    if(error){
-        console.log("could not get the set list",error)
-        return []
-    } else {
-        return data
-    }
-}
-
+/**
+ * Gets the sets of the user in addition to the date of the workout
+ * @param user the user of the current session
+ * @returns a list of sets from the user in addition to the date of the workout
+ */
 export async function getSetExercise(user:string){
     const {data,error} = await supabase
         .from('set')
