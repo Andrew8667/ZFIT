@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         alignItems:'center',
         position:'absolute',
         width:'100%',
-        marginTop: 830,
+        bottom:40
     }
 })
 

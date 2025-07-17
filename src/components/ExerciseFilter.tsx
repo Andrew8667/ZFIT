@@ -21,9 +21,9 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedLevel} onValueChange={(value)=>{setSelectedLevel(value)}}>
                             <Picker.Item value='' label='Any'></Picker.Item>
-                            {levels.map(level=>{
+                            {levels.map((level,index)=>{
                                 return(
-                                    <Picker.Item value={level} label={level}></Picker.Item>
+                                    <Picker.Item value={level} label={level} key={index.toString()}></Picker.Item>
                                 )
                             })}
                         </Picker>
@@ -33,9 +33,9 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedEquipment} onValueChange={(value)=>{setSelectedEquipment(value)}}>
                             <Picker.Item value='' label='any'></Picker.Item>
-                            {equipment.map(equipment=>{
+                            {equipment.map((equipment,index)=>{
                                 return(
-                                    <Picker.Item value={equipment} label={equipment}></Picker.Item>
+                                    <Picker.Item value={equipment} label={equipment}  key={index.toString()}></Picker.Item>
                                 )
                             })}
                         </Picker>
@@ -45,9 +45,9 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedMuscle} onValueChange={(value)=>{setSelectedMuscle(value)}}>
                             <Picker.Item value='' label='any'></Picker.Item>
-                            {muscles.map(muscle=>{
+                            {muscles.map((muscle,index)=>{
                                 return(
-                                    <Picker.Item value={muscle} label={muscle}></Picker.Item>
+                                    <Picker.Item value={muscle} label={muscle} key={index.toString()}></Picker.Item>
                                 )
                             })}
                         </Picker>
@@ -57,9 +57,9 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedCategory} onValueChange={(value)=>{setSelectedCategory(value)}}>
                             <Picker.Item value='' label='any'></Picker.Item>
-                            {categories.map(category=>{
+                            {categories.map((category,index)=>{
                                 return(
-                                    <Picker.Item value={category} label={category}></Picker.Item>
+                                    <Picker.Item value={category} label={category}  key={index.toString()}></Picker.Item>
                                 )
                             })}
                         </Picker>
@@ -69,9 +69,9 @@ categories,selectedCategory,setSelectedCategory,forces,selectedForce,setSelected
                         textStyle={{fontSize:20,fontWeight:600,alignSelf:'center'}}></CustomText>
                         <Picker style={styles.picker} selectedValue={selectedForce} onValueChange={(value)=>{setSelectedForce(value)}}>
                             <Picker.Item value='' label='any'></Picker.Item>
-                            {forces.map(force=>{
+                            {forces.map((force,index)=>{
                                 return(
-                                    <Picker.Item value={force} label={force}></Picker.Item>
+                                    <Picker.Item value={force} label={force} key={index.toString()}></Picker.Item>
                                 )
                             })}
                         </Picker>

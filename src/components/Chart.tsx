@@ -8,6 +8,7 @@ import { Picker } from "@react-native-picker/picker";
 import CustomText from "./CustomText";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { UserContext } from "../App";
+import DropDownPicker from "react-native-dropdown-picker";
 
 /**
  * Chart displays the week by week progress of an exercise on a specific day
@@ -15,7 +16,7 @@ import { UserContext } from "../App";
  */
 export default function Chart() {
   const screenWidth = Dimensions.get("window").width;
-  const [uniqueExercises, setUniqueExercises] = useState<string[]>([]);//exercises user has completed
+  const [uniqueExercises, setUniqueExercises] = useState<string[]>([]); //exercises user has completed
   const [selectedYear, setSelectedYear] = useState<number>(
     new Date().getFullYear()
   ); //year to display
@@ -23,8 +24,10 @@ export default function Chart() {
     new Date().getMonth()
   ); //month to display
   const [datesList, setDatesList] = useState<string[]>([]); //contains x axis week number values
-  const [volumeList, setVolumeList] = useState<number[]>([]); //contains y axis weekly volume values 
-  const [selectedExercise, setSelectedExercise] = useState("");//exercise to display info for
+  const [volumeList, setVolumeList] = useState<number[]>([]); //contains y axis weekly volume values
+  const [selectedExercise, setSelectedExercise] = useState(""); //exercise to display info for
+  const [open, setOpen] = useState(false); //dropdown is open or not
+  const [items, setItems] = useState<{ label: string; value: string }[]>([]); //items in the dropdown picker
   const userId = useContext(UserContext);
 
   useEffect(() => {
@@ -36,6 +39,11 @@ export default function Chart() {
       selectedMonth,
       setDatesList,
       setVolumeList
+    );
+    setItems(
+      uniqueExercises.map((exercise) => {
+        return { label: exercise, value: exercise };
+      })
     );
   }, []);
 
@@ -50,7 +58,8 @@ export default function Chart() {
     );
   }, [selectedExercise, selectedMonth, selectedYear]); //everytime the user inputs something new, repopulate the chart data
 
-  const chartData = { //contains data from chart
+  const chartData = {
+    //contains data from chart
     labels: datesList,
     datasets: [
       {
@@ -111,7 +120,8 @@ export default function Chart() {
             onValueChange={(itemValue, itemIndex) =>
               setSelectedMonth(itemValue)
             }
-            style={{ height: 40, width: "50%" }}
+            style={{ height: 20, width: "50%" }}
+            itemStyle={{ fontSize: 12 }}
           >
             {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].map((month) => {
               return (
@@ -126,7 +136,8 @@ export default function Chart() {
           <Picker
             selectedValue={selectedYear}
             onValueChange={(itemValue, itemIndex) => setSelectedYear(itemValue)}
-            style={{ height: 40, width: "50%" }}
+            style={{ height: 20, width: "50%" }}
+            itemStyle={{ fontSize: 12 }}
           >
             <Picker.Item
               key={selectedYear - 1}
@@ -158,23 +169,16 @@ export default function Chart() {
             alignSelf: "center",
           }}
         ></CustomText>
-        <Picker
-          selectedValue={selectedExercise}
-          onValueChange={(itemValue, itemIndex) =>
-            setSelectedExercise(itemValue)
-          }
-          style={{ height: 40, width: "100%" }}
-        >
-          {uniqueExercises.map((exercise) => {
-            return (
-              <Picker.Item
-                key={exercise}
-                value={exercise}
-                label={exercise}
-              ></Picker.Item>
-            );
-          })}
-        </Picker>
+        <DropDownPicker
+          style={styles.dropdown}
+          multiple={false}
+          open={open}
+          value={selectedExercise}
+          items={items}
+          setOpen={setOpen}
+          setValue={setSelectedExercise}
+          setItems={setItems}
+        />
       </View>
     </View>
   );
@@ -202,5 +206,13 @@ const styles = StyleSheet.create({
   dateContainer2: {
     flexDirection: "row",
     justifyContent: "space-between",
+  },
+  dropdown: {
+    fontFamily: "Inter",
+    borderColor: "#e4e4e4",
+    color: "##e4e4e4",
+    marginTop: 10,
+    width: "90%",
+    alignSelf: "center",
   },
 });

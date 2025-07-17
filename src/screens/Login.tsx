@@ -28,7 +28,7 @@ const Login = function Login({ navigation }: { navigation: any }) {
   const [loading, setLoading] = useState(false);
 
   return (
-    <Background extraStyle={{ alignItems: "center" }}>
+    <Background extraStyle={{ alignItems: "center"}}>
       <CustomText
         text="ZFIT"
         textStyle={{

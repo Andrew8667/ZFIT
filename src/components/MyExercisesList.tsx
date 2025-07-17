@@ -26,14 +26,14 @@ const MyExerciseList = function MyExerciseList({
 }) {
   return (
     <ScrollView style={styles.container}>
-      {myExercises.map((exercise) => {
+      {myExercises.map((exercise,index) => {
         return (
-          <View key={exercise.name} style={styles.exerciseContainer}>
+          <View key={index.toString()} style={styles.exerciseContainer}>
             <CustomText
               text={exercise.name}
               textStyle={styles.exerciseName}
             ></CustomText>
-            {exercise.recordedSets.map((set) => {
+            {exercise.recordedSets.map((set,index) => {
               const data =
                 "lbs: " +
                 set.lbs +
@@ -44,7 +44,7 @@ const MyExerciseList = function MyExerciseList({
                 " " +
                 new Date(set.created_at).toLocaleTimeString();
               return (
-                <View style={styles.datacontainer}>
+                <View style={styles.datacontainer} key={index.toString()}>
                   <Image
                     source={require("../../assets/bluediamond.png")}
                     style={{ width: 20, height: 20, marginRight: 10 }}
@@ -78,7 +78,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     padding: 10,
-    height: "80%",
+    height: '80%',
+    marginBottom:100
   },
   exerciseContainer: {
     width: "100%",
