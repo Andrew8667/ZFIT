@@ -14,6 +14,11 @@ import {
 import CustomButton from "./CustomButton";
 import CustomText from "./CustomText";
 
+/**
+ * Used after workout is added to db to show success message
+ * @param param0 sets the visibility of success message
+ * @returns a screen displaying success message
+ */
 const SuccessfulCreation = function SuccessfulCreation({
   setSuccessModalVisible,
 }: {
