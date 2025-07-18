@@ -56,7 +56,9 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
                 <FinishingWorkoutDetails setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
             </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
-            <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
+            <View style={{height:'80%', overflow:'hidden'}}>
+              <WorkoutInfoFlatlist></WorkoutInfoFlatlist>
+            </View>
             <View style={styles.bottomBtnContainer}>
                 <CustomButton text='Return'
                 extraBtnDesign={{backgroundColor:'#f57c00',width:120,height:35,borderRadius:10}}

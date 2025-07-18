@@ -116,17 +116,7 @@ export type mergedList ={
     duration:number,
     musclegroups:string,
     notes:string,
-    set:{
-        id:string,
-        exercise:string,
-        set_num:number,
-        created_at:string,
-        lbs:number,
-        reps:number,
-        userid:string,
-        recorded:boolean,
-        setid:string,
-    }[]
+    set:setReturn[]
 }
 
 /**

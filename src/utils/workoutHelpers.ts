@@ -19,6 +19,10 @@ export const getLevels = function(exerciseList:exercise[]):dropdownItem[]{
     })
     const arr = Array.from(levels)
     const newArr:dropdownItem[] = []
+    newArr.push({
+        value:'',
+        label:'Any'
+    })
     arr.map(level=>{
         newArr.push({
             value:level,
@@ -42,6 +46,10 @@ export const getEquipment = function(exerciseList:exercise[]):dropdownItem[]{
     })
     const arr= Array.from(equipment)
     const newArr:dropdownItem[] = []
+    newArr.push({
+        value:'',
+        label:'Any'
+    })
     arr.map(equipment=>{
         newArr.push({
             value:equipment,
@@ -63,6 +71,10 @@ export const getMuscles = function(exerciseList:exercise[]):dropdownItem[]{
     })
     const arr=Array.from(muscles)
     const newArr:dropdownItem[] = []
+    newArr.push({
+        value:'',
+        label:'Any'
+    })
     arr.map(muscle=>{
         newArr.push({
             value:muscle,
@@ -102,6 +114,10 @@ export const getCategories = function(exerciseList:exercise[]):dropdownItem[]{
     })
     const arr=Array.from(categories)
     const newArr:dropdownItem[] = []
+    newArr.push({
+        value:'',
+        label:'Any'
+    })
     arr.map(category=>{
         newArr.push({
             value:category,
@@ -125,6 +141,10 @@ export const getForces = function(exerciseList:exercise[]):dropdownItem[]{
     })
     const arr=Array.from(forces)
     const newArr:dropdownItem[] = []
+    newArr.push({
+        value:'',
+        label:'Any'
+    })
     arr.map(force=>{
         newArr.push({
             value:force,
@@ -367,11 +387,14 @@ export async function getWeekStats(user:string,setTotalLbs:(inputs:number)=>void
     const filteredData:mergedList[] = data.filter(item=>new Date(item.date) >= new Date(startOfWeek) && new Date(item.date) <= new Date(endOfWeek))
     let totalLbs = 0
     let totalReps = 0
+    let totalSets = 0
     const totalDuration = filteredData.reduce((sum, item) => sum + item.duration,0)
-    const totalSets = filteredData.length
-    filteredData.forEach(item=>{
-        totalLbs+=item.set[0].lbs
-        totalReps+=item.set[0].reps
+    filteredData.forEach(workout=>{
+        workout.set.forEach(set=>{
+            totalLbs+=set.lbs
+            totalReps+=set.reps
+            totalSets+=1
+        })
     })
     let date = new Date()
     const result = filteredData.find(item=>new Date(item.date).getFullYear() === date.getFullYear() && new Date(item.date).getDay() === date.getDay() && new Date(item.date).getMonth() === date.getMonth())

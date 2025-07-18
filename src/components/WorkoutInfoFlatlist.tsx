@@ -99,7 +99,7 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
 const styles = StyleSheet.create({
     flatlistContainer:{
         width:'100%',
-        height:663
+        height:'100%'
     },
     flatlist:{
         width:'100%',

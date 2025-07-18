@@ -42,8 +42,8 @@ const Home = function Home({ navigation }: { navigation: any }) {
       userId,
       setTotalLbs,
       setTotalDuration,
-      setTotalReps,
       setTotalSets,
+      setTotalReps,
       setWorkoutStreak
     ); //populates the weekly stats of the user
   }, []);

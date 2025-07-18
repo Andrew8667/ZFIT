@@ -41,7 +41,9 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         display='default'
                         onChange={(event,selectedDate)=>{
                             if(selectedDate){
-                                dispatch(updateDate(selectedDate.toISOString().split("T")[0]))
+                                const correctDate = new Date()
+                                correctDate.setDate(correctDate.getDate()+1)
+                                dispatch(updateDate(correctDate.toISOString().split("T")[0]))
                             }
                         }}
                         ></DateTimePicker>  
@@ -63,7 +65,7 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         <TextInput onChangeText={(text)=>{dispatch(updateNotes(text))}} value={workout.notes} style={styles.notes} multiline={true} placeholder='Notes' placeholderTextColor={'#696969d'}></TextInput>
                     </View>
                 </ScrollView>
-                <View style={styles.btnContainer}> 
+                <View style={styles.btnContainer}>
                     <CustomButton text='Return'
                     extraBtnDesign={{backgroundColor:"#F57C00",width:120,
                     height:35,borderRadius:10}}
