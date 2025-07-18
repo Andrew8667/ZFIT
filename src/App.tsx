@@ -8,11 +8,11 @@ import { Session } from "@supabase/supabase-js";
 import Login from "./screens/Login";
 import Signup from "./screens/Signup";
 import Home from "./screens/Home";
-import Archives from "./screens/Archives";
+import Finished from "./screens/Finished";
 import Create from "./screens/Create";
 import Progress from "./screens/Progress";
 import AddExercise from "./screens/AddExercise";
-import MyExercises from "./screens/MyExercises";
+import Highlights from "./screens/Highlights";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import MyWorkout from "./screens/MyWorkout";
@@ -60,8 +60,8 @@ export default function App() {
               options={{ headerShown: false, animation: "none" }}
             />
             <Stack.Screen
-              name="Archives"
-              component={Archives}
+              name="Finished"
+              component={Finished}
               options={{ headerShown: false, animation: "none" }}
             />
             <Stack.Screen
@@ -85,8 +85,8 @@ export default function App() {
               options={{ headerShown: false, animation: "none" }}
             />
             <Stack.Screen
-              name="MyExercises"
-              component={MyExercises}
+              name="Highlights"
+              component={Highlights}
               options={{ headerShown: false, animation: "none" }}
             />
           </Stack.Navigator>

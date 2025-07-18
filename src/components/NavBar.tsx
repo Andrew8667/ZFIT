@@ -15,8 +15,8 @@ const NavBar = function NavBar({navigation,curScreen}:{navigation:NavigationProp
             <TouchableOpacity onPress={()=>{curScreen==='home'?null:navigation.navigate('Home')}}>
                 <Image source={curScreen==='home'?require('../../assets/bluehome.png'):require('../../assets/home.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{curScreen==='archives'?null:navigation.navigate('Archives')}}>
-                <Image source={curScreen==='archives'?require('../../assets/bluearchives.png'):require('../../assets/archives.png')}></Image>
+            <TouchableOpacity onPress={()=>{curScreen==='finished'?null:navigation.navigate('Finished')}}>
+                <Image source={curScreen==='finished'?require('../../assets/bluefinished.png'):require('../../assets/finished.png')}></Image>
             </TouchableOpacity>
             <TouchableOpacity onPress={()=>{curScreen==='create'?null:navigation.navigate('Create')}}>
                 <Image source={curScreen==='create'?require('../../assets/bluecreate.png'):require('../../assets/create.png')}></Image>
@@ -24,8 +24,8 @@ const NavBar = function NavBar({navigation,curScreen}:{navigation:NavigationProp
             <TouchableOpacity onPress={()=>{curScreen==='progress'?null:navigation.navigate('Progress')}}>
                 <Image source={curScreen==='progress'?require('../../assets/blueprogress.png'):require('../../assets/progress.png')}></Image>
             </TouchableOpacity>
-            <TouchableOpacity onPress={()=>{curScreen==='myexercises'?null:navigation.navigate('MyExercises')}}>
-                <Image source={curScreen==='myexercises'?require('../../assets/bluemyexercises.png'):require('../../assets/myexercises.png')}></Image>
+            <TouchableOpacity onPress={()=>{curScreen==='highlights'?null:navigation.navigate('Highlights')}}>
+                <Image source={curScreen==='highlights'?require('../../assets/bluehighlights.png'):require('../../assets/highlights.png')}></Image>
             </TouchableOpacity>
             </View>
         </View>

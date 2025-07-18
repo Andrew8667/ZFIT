@@ -39,7 +39,7 @@ import { fetchData } from "../api/exercises";
 import { UserContext } from "../App";
 
 /**
- * Archives contain your past workouts that are marked as completed
+ * Finished contain your past workouts that are marked as completed
  * Users can search for these workouts by name or use filter to filter by
  * -date
  * -duration
@@ -47,7 +47,7 @@ import { UserContext } from "../App";
  * @param param0 navigation allows you to navigate to the different screens
  * @returns screen that displays your finished workouts
  */
-const Archives = function Archives({ navigation }: { navigation: any }) {
+const Finished = function Finished({ navigation }: { navigation: any }) {
   const [exerciseList, setExerciseList] = useState<exercise[]>([]); //list of exercise info from exercises.json
   const [searchText, setSearchText] = useState(""); //keeps track of what is typed in search bar
   const [filterModalVisible, setFilterModalVisible] = useState(false); //controls visibility of filter modal
@@ -90,7 +90,7 @@ const Archives = function Archives({ navigation }: { navigation: any }) {
         ></WorkoutFilter>
       </CustomModal>
       <CustomText
-        text="Archives"
+        text="Finished"
         textStyle={{
           color: "#FFFFFF",
           fontWeight: 700,
@@ -117,9 +117,9 @@ const Archives = function Archives({ navigation }: { navigation: any }) {
         )}
         containerStyle={{ height: 610 }}
       ></StoredWorkouts>
-      <NavBar navigation={navigation} curScreen="archives"></NavBar>
+      <NavBar navigation={navigation} curScreen="finished"></NavBar>
     </Background>
   );
 };
 
-export default Archives;
+export default Finished;

@@ -40,12 +40,15 @@ export default function Chart() {
       setDatesList,
       setVolumeList
     );
+  }, []);
+
+  useEffect(()=>{
     setItems(
       uniqueExercises.map((exercise) => {
         return { label: exercise, value: exercise };
       })
     );
-  }, []);
+  },[uniqueExercises])
 
   useEffect(() => {
     getChartData(

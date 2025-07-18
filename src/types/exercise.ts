@@ -138,3 +138,11 @@ export type myExercises = {
     name:string,
     recordedSets:{reps:number,lbs:number, created_at:string,setid:string}[]
 }
+
+/**
+ * Type of individual item that gets loaded into dropdown
+ */
+export type dropdownItem={
+    value:string,
+    label:string
+}

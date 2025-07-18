@@ -1,4 +1,4 @@
-import { exercise, mergedList, myExercises, setReturn, setReturnWithDate, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
+import { dropdownItem, exercise, mergedList, myExercises, setReturn, setReturnWithDate, setsType, singleExercise, workoutReturn, workoutSliceType, workoutSliceTypeWithId } from "../types/exercise"
 import { useSelector } from "react-redux"; 
 import RootState from "../store/store";
 import { supabase } from "../lib/supabase";
@@ -10,42 +10,66 @@ import { start } from "repl";
 /**
  * Gets all the unique levels of each exercise in the list
  * @param exerciseList list of all the exercises and their info
- * @returns list of unique exercise level difficulty as strings
+ * @returns list of unique exercise level difficulty as a list of dropdown items
  */
-export const getLevels = function(exerciseList:exercise[]):string[]{
+export const getLevels = function(exerciseList:exercise[]):dropdownItem[]{
     const levels = new Set<string>();
     exerciseList.forEach(exercise=>{
         levels.add(exercise.level)
     })
-    return Array.from(levels);
+    const arr = Array.from(levels)
+    const newArr:dropdownItem[] = []
+    arr.map(level=>{
+        newArr.push({
+            value:level,
+            label:level
+        }) 
+    })
+    return newArr
 }
 
 /**
  * Gets the equipment that is possible
  * @param exerciseList list of all the exercises and their info
- * @returns a unique list of possible equipment
+ * @returns a unique list of possible equipment as a list of dropdown items
  */
-export const getEquipment = function(exerciseList:exercise[]):string[]{
+export const getEquipment = function(exerciseList:exercise[]):dropdownItem[]{
     const equipment = new Set<string>();
     exerciseList.forEach(exercise=>{
         if(exercise.equipment !== null){
             equipment.add(exercise.equipment);
         } 
     })
-    return Array.from(equipment)
+    const arr= Array.from(equipment)
+    const newArr:dropdownItem[] = []
+    arr.map(equipment=>{
+        newArr.push({
+            value:equipment,
+            label:equipment
+        }) 
+    })
+    return newArr
 }
 
 /**
  * Gets a unique list of muscles that can be trained
  * @param exerciseList list of all the exercises and their info
- * @returns unique string list of muscles
+ * @returns unique string list of muscles as a list of dropdown items
  */
-export const getMuscles = function(exerciseList:exercise[]):string[]{
+export const getMuscles = function(exerciseList:exercise[]):dropdownItem[]{
     const muscles = new Set<string>();
     exerciseList.forEach(exercise=>{
         muscles.add(exercise.primaryMuscles[0])
     })
-    return Array.from(muscles)
+    const arr=Array.from(muscles)
+    const newArr:dropdownItem[] = []
+    arr.map(muscle=>{
+        newArr.push({
+            value:muscle,
+            label:muscle
+        }) 
+    })
+    return newArr
 }
 
 /**
@@ -71,27 +95,43 @@ export const getMusclesList = function(exerciseList:exercise[]):{label:string,va
  * @param exerciseList list of all the exercises and their info
  * @returns unique list of categories
  */
-export const getCategories = function(exerciseList:exercise[]):string[]{
+export const getCategories = function(exerciseList:exercise[]):dropdownItem[]{
     const categories = new Set<string>();
     exerciseList.forEach(exercise=>{
         categories.add(exercise.category)
     })
-    return Array.from(categories)
+    const arr=Array.from(categories)
+    const newArr:dropdownItem[] = []
+    arr.map(category=>{
+        newArr.push({
+            value:category,
+            label:category
+        }) 
+    })
+    return newArr
 }
 
 /**
  * Gets the force of the exercise such as pull or push
  * @param exerciseList list of all the exercises and their info
- * @returns unique string list of exercise forces
+ * @returns unique string list of exercise forces  as a list of dropdown items
  */
-export const getForces = function(exerciseList:exercise[]):string[]{
+export const getForces = function(exerciseList:exercise[]):dropdownItem[]{
     const forces = new Set<string>();
     exerciseList.forEach(exercise=>{
         if(exercise.force !== null){
             forces.add(exercise.force)
         }
     })
-    return Array.from(forces)
+    const arr=Array.from(forces)
+    const newArr:dropdownItem[] = []
+    arr.map(force=>{
+        newArr.push({
+            value:force,
+            label:force
+        }) 
+    })
+    return newArr
 }
 
 /**

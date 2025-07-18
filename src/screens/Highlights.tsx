@@ -18,7 +18,7 @@ import { UserContext } from '../App'
  * @param param0 navigation to other screens
  * @returns screen containing recorded sets
  */
-const MyExercises = function MyExercises({navigation}:{navigation:NavigationProp<any>}){
+const Highlights = function Highlights({navigation}:{navigation:NavigationProp<any>}){
     const [myExercises,setMyExercises] = useState<myExercises[]>([])
     const userId = useContext(UserContext)
     
@@ -70,7 +70,7 @@ const MyExercises = function MyExercises({navigation}:{navigation:NavigationProp
         <Background>
             <CustomText text='My Exercises' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <MyExerciseList myExercises={myExercises} setMyExercises={setMyExercises}></MyExerciseList>
-            <NavBar curScreen='myexercises' navigation={navigation}></NavBar>
+            <NavBar curScreen='highlights' navigation={navigation}></NavBar>
         </Background>
     )
 }
@@ -79,4 +79,4 @@ const styles = StyleSheet.create({
 
 })
 
-export default MyExercises
+export default Highlights

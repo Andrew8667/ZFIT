@@ -10,7 +10,7 @@ import CustomButton from '../components/CustomButton';
 import CustomText from '../components/CustomText';
 import { fetchData } from '../api/exercises';
 import Search from '../components/Search'
-import {exercise} from '../types/exercise'
+import {dropdownItem, exercise} from '../types/exercise'
 import ExerciseFlatlist from '../components/ExerciseFlatlist';
 import CustomModal from '../components/CustomModal';
 import ExerciseInfo from '../components/ExerciseInfo';
@@ -34,6 +34,11 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
     const [selectedMuscle,setSelectedMuscle] = useState('') //muscle hit during workout
     const [selectedCategory,setSelectedCategory] = useState('') //category of the workout ex strength
     const [selectedForce,setSelectedForce] = useState('') //force of workout ex pull
+    const [levels,setLevels] = useState<dropdownItem[]>([])
+    const [equipment,setEquipment] = useState<dropdownItem[]>([])
+    const [muscles,setMuscles] = useState<dropdownItem[]>([])
+    const [categories,setCategories] = useState<dropdownItem[]>([])
+    const [forces, setForces] = useState<dropdownItem[]>([])
 
     useEffect(()=>{ //populates the exercise list when screen loads
         async function loadData(){
@@ -41,6 +46,14 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
         }
         loadData()
     },[])
+
+    useEffect(()=>{
+        setLevels(getLevels(exerciseList))
+        setEquipment(getEquipment(exerciseList))
+        setMuscles(getMuscles(exerciseList))
+        setCategories(getCategories(exerciseList))
+        setForces(getForces(exerciseList))
+    },[exerciseList])
 
     return(
         <Background>
@@ -67,11 +80,11 @@ const AddExercise = function AddExercise({navigation}:{navigation:any}){
                 <ExerciseInfo setExerciseModalVisible={setExerciseModalVisible} exercise={viewExercise}></ExerciseInfo>
             </CustomModal>
             <CustomModal modalVisible={filterModalVisible}>
-                <ExerciseFilter levels={getLevels(exerciseList)} selectedLevel={selectedLevel} setSelectedLevel={setSelectedLevel} 
-                equipment={getEquipment(exerciseList)} selectedEquipment={selectedEquipment} setSelectedEquipment={setSelectedEquipment}
-                muscles={getMuscles(exerciseList)} selectedMuscle={selectedMuscle} setSelectedMuscle={setSelectedMuscle}
-                categories={getCategories(exerciseList)} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
-                forces={getForces(exerciseList)} selectedForce={selectedForce} setSelectedForce={setSelectedForce}
+                <ExerciseFilter levels={levels} setLevels={setLevels} selectedLevel={selectedLevel} setSelectedLevel={setSelectedLevel} 
+                equipment={equipment} setEquipment={setEquipment} selectedEquipment={selectedEquipment} setSelectedEquipment={setSelectedEquipment}
+                muscles={muscles} setMuscles={setMuscles} selectedMuscle={selectedMuscle} setSelectedMuscle={setSelectedMuscle}
+                categories={categories} setCategories={setCategories} selectedCategory={selectedCategory} setSelectedCategory={setSelectedCategory}
+                forces={forces} setForces={setForces} selectedForce={selectedForce} setSelectedForce={setSelectedForce}
                 setFilterModalVisible={setFilterModalVisible}></ExerciseFilter>
             </CustomModal>
         </Background>
