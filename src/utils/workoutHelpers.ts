@@ -416,4 +416,10 @@ export async function getWeekStats(user:string,setTotalLbs:(inputs:number)=>void
     setTotalSets(totalSets)
     setTotalReps(totalReps)
 }
+
+export function correctedDate(date:string):Date{
+    const correctDate = new Date(date)
+    correctDate.setDate(correctDate.getDate()+1)
+    return correctDate
+}
   

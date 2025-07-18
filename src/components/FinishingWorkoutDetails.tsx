@@ -5,7 +5,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import { useState } from 'react';
 import { updateTitle,updateDate,updateDuration,updateMusclegroups,updateNotes, clearWorkout} from '../store/workoutSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { checkWorkout, getDate, recordWorkout } from '../utils/workoutHelpers';
+import { checkWorkout, correctedDate, getDate, recordWorkout } from '../utils/workoutHelpers';
 import RootState from '../store/store';
 import { NavigationProp } from '@react-navigation/native';
 
@@ -36,13 +36,13 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                     <View style={styles.inputContainer}> 
                         <CustomText text='Date: ' textStyle={{color:'#000000',fontSize:20,fontWeight:600}}></CustomText>
                         <DateTimePicker
-                        value={new Date(workout.date)}
+                        value={correctedDate(workout.date)}
                         mode='date'
                         display='default'
                         onChange={(event,selectedDate)=>{
                             if(selectedDate){
-                                const correctDate = new Date()
-                                correctDate.setDate(correctDate.getDate()+1)
+                                const correctDate = selectedDate
+                                correctDate.setDate(selectedDate.getDate()-1)
                                 dispatch(updateDate(correctDate.toISOString().split("T")[0]))
                             }
                         }}
