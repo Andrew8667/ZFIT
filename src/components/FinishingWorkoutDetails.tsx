@@ -8,6 +8,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { checkWorkout, correctedDate, getDate, recordWorkout } from '../utils/workoutHelpers';
 import RootState from '../store/store';
 import { NavigationProp } from '@react-navigation/native';
+import { deleteWorkout } from '../lib/workouts';
+import { deleteSets } from '../lib/sets';
 
 /**
  * Content inside the modal when finish button is clicked
@@ -15,8 +17,8 @@ import { NavigationProp } from '@react-navigation/native';
  * @param param0 setFinishingModalVisible helps to control whether the modal is shown or not
  * @returns a component where users can input their finishing details for their workout
  */
-const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingModalVisible,source,navigation}:
-    {setFinishingModalVisible:(input:false)=>void,source:string,navigation:NavigationProp<any>}){
+const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingModalVisible,source,navigation,workoutId}:
+    {setFinishingModalVisible:(input:false)=>void,source:string,navigation:NavigationProp<any>,workoutId:string}){
         const dispatch = useDispatch()
         const workout = useSelector((state:RootState)=>state.workout)//gets the state of the workout slice
         const checkAlert = function checkAlert(){ //returns an alert if title is empty
@@ -79,6 +81,8 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                         if(!checkWorkout(workout)){ //workout doesn't have a title
                             checkAlert()
                         } else {
+                            deleteWorkout(workoutId)
+                            deleteSets(workoutId)
                             recordWorkout(workout,source)
                             dispatch(clearWorkout(''))
                             setFinishingModalVisible(false)

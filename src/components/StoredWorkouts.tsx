@@ -39,12 +39,10 @@ const StoredWorkouts = function StoredWorkouts({isHorizontal,type,containerStyle
               onPress: () => {
                 //clear database of sets and workouts with the given id
                 const {id,...newWorkout} = workout
-                deleteWorkout(id)
-                deleteSets(id)
                 //populate the redux workout
                 dispatch(populateWorkout(newWorkout))
                 //navigate to my workout
-                navigation.navigate('MyWorkout')
+                navigation.navigate('MyWorkout',{workoutId:id})
               },
             },
           ],

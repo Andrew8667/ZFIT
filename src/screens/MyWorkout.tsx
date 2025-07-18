@@ -10,15 +10,17 @@ import CustomButton from '../components/CustomButton';
 import WorkoutInfoFlatlist from '../components/WorkoutInfoFlatlist'
 import CustomModal from '../components/CustomModal'
 import FinishingWorkoutDetails from '../components/FinishingWorkoutDetails'
+import { NavigationProp } from '@react-navigation/native'
 
 /**
  * Where users create their workouts
  * @param param0 navigation to other screens
  * @returns a screen containing workout info
  */
-const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
+const MyWorkout = function MyWorkout({navigation,route}:{navigation:NavigationProp<any>,route:any}){
     const [finishingModalVisible,setFinishingModalVisible] = useState(false)//determines whether or not the modal where users can input their final workout details is shown or not
-    const [source,setSource] = useState('finish')
+    const [source,setSource] = useState('finish')//used in finishing workout details to determine what to do
+    const workoutId = route?.params?.workoutId ?? ''
     const dispatch = useDispatch()
     //Alert asking users if they want to save their workout to inprogress or not
     const saveWorkoutAlert = function saveWorkoutAlert(){
@@ -53,7 +55,7 @@ const MyWorkout = function MyWorkout({navigation}:{navigation:any}){
     return(
         <Background>
             <CustomModal modalVisible={finishingModalVisible}>
-                <FinishingWorkoutDetails setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
+                <FinishingWorkoutDetails workoutId={workoutId} setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
             </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <View style={{height:'80%', overflow:'hidden'}}>
