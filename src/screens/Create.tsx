@@ -38,6 +38,8 @@ import Search from "../components/Search";
 import CustomModal from "../components/CustomModal";
 import WorkoutFilter from "../components/WorkoutFilter";
 import { UserContext } from "../App";
+import SuccessfulCreation from "../components/SuccessfulCreation";
+import { NavigationProp } from "@react-navigation/native";
 
 /**
  * Create screen contains a button to create a new workout
@@ -46,7 +48,7 @@ import { UserContext } from "../App";
  * @param param0 navigation to the other screens
  * @returns the create screen
  */
-const Create = function Create({ navigation }: { navigation: any }) {
+const Create = function Create({ navigation,route }: { navigation: NavigationProp<any>,route:any }) {
   const [exerciseList, setExerciseList] = useState<exercise[]>([]); //contains info that was fetched from exercises.json
   const [searchText, setSearchText] = useState(""); //keeps track of text in search bar
   const [filterModalVisible, setFilterModalVisible] = useState(false); //visibility of filter modal
@@ -56,7 +58,9 @@ const Create = function Create({ navigation }: { navigation: any }) {
   const [open, setOpen] = useState<boolean>(false); //Keeps track of if the dropdown in filter for exercises is open
   const [items, setItems] = useState<{ value: string; label: string }[]>([]); //populates the dropdown items
   const [workouts, setWorkouts] = useState<workoutSliceTypeWithId[]>([]); //holds the in progress workouts
+  const [successModalVisible, setSuccessModalVisible] = useState(false); //visibility of filter modal
   const userId = useContext(UserContext);
+  const status = route?.params?.status ?? 'fail'
 
   useEffect(() => {
     //populates the exercise list when screen loads
@@ -65,6 +69,11 @@ const Create = function Create({ navigation }: { navigation: any }) {
       setWorkouts(await getFullWorkouts(userId, true));
     }
     loadData();
+    if(status === 'success'){
+        setSuccessModalVisible(true)
+    } else {
+        setSuccessModalVisible(false)
+    }
   }, []);
 
   useEffect(() => {
@@ -135,6 +144,9 @@ const Create = function Create({ navigation }: { navigation: any }) {
          justifyContent: "center",
        }}
      ></StoredWorkouts>
+     <CustomModal modalVisible={successModalVisible}>
+       <SuccessfulCreation setSuccessModalVisible={setSuccessModalVisible}></SuccessfulCreation>
+     </CustomModal>
      <NavBar navigation={navigation} curScreen="create"></NavBar>
     </Background>
     );

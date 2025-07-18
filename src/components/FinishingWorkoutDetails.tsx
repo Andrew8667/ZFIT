@@ -82,7 +82,7 @@ const FinishingWorkoutDetails = function FinishingWorkoutDetails({setFinishingMo
                             recordWorkout(workout,source)
                             dispatch(clearWorkout(''))
                             setFinishingModalVisible(false)
-                            navigation.navigate('Create')
+                            navigation.navigate('Create',{status:'success'})
                         }
                     }}></CustomButton>
                 </View>
