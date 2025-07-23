@@ -11,6 +11,8 @@ import WorkoutInfoFlatlist from '../components/WorkoutInfoFlatlist'
 import CustomModal from '../components/CustomModal'
 import FinishingWorkoutDetails from '../components/FinishingWorkoutDetails'
 import { NavigationProp } from '@react-navigation/native'
+import { deleteWorkout } from '../lib/workouts'
+import { deleteSets } from '../lib/sets'
 
 /**
  * Where users create their workouts
@@ -21,6 +23,7 @@ const MyWorkout = function MyWorkout({navigation,route}:{navigation:NavigationPr
     const [finishingModalVisible,setFinishingModalVisible] = useState(false)//determines whether or not the modal where users can input their final workout details is shown or not
     const [source,setSource] = useState('finish')//used in finishing workout details to determine what to do
     const workoutId = route?.params?.workoutId ?? ''
+    const type = route?.params?.type ?? ''
     const dispatch = useDispatch()
     //Alert asking users if they want to save their workout to inprogress or not
     const saveWorkoutAlert = function saveWorkoutAlert(){
@@ -33,6 +36,10 @@ const MyWorkout = function MyWorkout({navigation,route}:{navigation:NavigationPr
                     text: 'Discard',
                     style: 'destructive',
                     onPress: () => {
+                      if(type==='Edit'){
+                        deleteWorkout(workoutId);
+                        deleteSets(workoutId);
+                      }
                       dispatch(clearWorkout(''))
                       navigation.navigate('Create')
                     },
@@ -55,7 +62,7 @@ const MyWorkout = function MyWorkout({navigation,route}:{navigation:NavigationPr
     return(
         <Background>
             <CustomModal modalVisible={finishingModalVisible}>
-                <FinishingWorkoutDetails workoutId={workoutId} setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
+                <FinishingWorkoutDetails workoutId={workoutId} type={type} setFinishingModalVisible={setFinishingModalVisible} source={source} navigation={navigation}></FinishingWorkoutDetails>
             </CustomModal>
             <CustomText text='My Workout' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
             <View style={{height:'80%', overflow:'hidden'}}>

@@ -28,21 +28,30 @@ const StoredWorkouts = function StoredWorkouts({isHorizontal,type,containerStyle
     function askToEditWorkout(workout:workoutSliceTypeWithId) {
         return(Alert.alert(
           'Edit Workout',
-          `Would you like to edit the workout "${workout.title}"?`,
+          `What would you like to do with the workout "${workout.title}"?`,
           [
             {
               text: 'Cancel',
               style: 'cancel',
             },
             {
+                text: 'Use as Template',
+                onPress: () => {
+                  const {id,...newWorkout} = workout
+                  //populate the redux workout
+                  dispatch(populateWorkout(newWorkout))
+                  //navigate to my workout
+                  navigation.navigate('MyWorkout',{workoutId:id,type:'Template'})
+                },
+              },
+            {
               text: 'Edit',
               onPress: () => {
-                //clear database of sets and workouts with the given id
                 const {id,...newWorkout} = workout
                 //populate the redux workout
                 dispatch(populateWorkout(newWorkout))
                 //navigate to my workout
-                navigation.navigate('MyWorkout',{workoutId:id})
+                navigation.navigate('MyWorkout',{workoutId:id,type:'Edit'})
               },
             },
           ],

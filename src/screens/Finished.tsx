@@ -115,7 +115,7 @@ const Finished = function Finished({ navigation }: { navigation: any }) {
           selectedMuscles,
           workouts
         )}
-        containerStyle={{ height: 610 }}
+        containerStyle={{ height: '73%' }}
       ></StoredWorkouts>
       <NavBar navigation={navigation} curScreen="finished"></NavBar>
     </Background>
