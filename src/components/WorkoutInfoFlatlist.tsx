@@ -26,7 +26,6 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
                 <CustomText text='lbs' textStyle={styles.categoryStyles}></CustomText>
                 <CustomText text='Reps' textStyle={styles.categoryStyles}></CustomText>
                 <CustomText text='Delete' textStyle={styles.categoryStyles}></CustomText>
-                <CustomText text='Record?' textStyle={styles.categoryStyles}></CustomText>
             </View>
                 {item.sets.map((set) => (
                     <View key={set.setNum} style={styles.inputContainer}>
@@ -37,34 +36,23 @@ const WorkoutInfoFlatlist = function WorkoutInfoFlatlist(){
                         <TextInput
                             style={styles.fillContainer}
                             onChangeText={(value) => dispatch(updateLbs(item.name+','+set.setNum+','+value))}
-                            value={exercises
-                                .filter((exercise): exercise is singleExercise => exercise?.name !== undefined)
-                                .find((exercise) => exercise.name === item.name)
-                                ?.sets.find((aSet) => aSet.setNum === set.setNum)
-                                ?.lbs.toString() ?? ''}
+                            placeholder="0"
+                            placeholderTextColor={"#696969"}
+                            value={exercises.find(exercise=>exercise.name === item.name)?.sets.find(aSet=>aSet.setNum === set.setNum)?.lbs === 0?'':exercises.find(exercise=>exercise.name === item.name)?.sets.find(aSet=>aSet.setNum === set.setNum)?.lbs.toString()}
                             />                           
                         </View>
                         <View style={[styles.inputBox,{backgroundColor:'#FFFFFF'}]}>
                             <TextInput
                                 style={styles.fillContainer}
                                 onChangeText={(value) => dispatch(updateReps(item.name+','+set.setNum+','+value))}
-                                value={exercises
-                                    .filter((exercise): exercise is singleExercise => exercise?.name !== undefined)
-                                    .find((exercise) => exercise.name === item.name)
-                                    ?.sets.find((aSet) => aSet.setNum === set.setNum)
-                                    ?.reps.toString() ?? ''}
+                                placeholder="0"
+                                placeholderTextColor={"#696969"}
+                                value={exercises.find(exercise=>exercise.name === item.name)?.sets.find(aSet=>aSet.setNum === set.setNum)?.reps === 0?'':exercises.find(exercise=>exercise.name === item.name)?.sets.find(aSet=>aSet.setNum === set.setNum)?.reps.toString()}
                             />
                         </View>
                         <View style={[styles.inputBox,{backgroundColor:'#f3a4a2'}]}>
                             <TouchableOpacity style = {{width:'100%',height:'100%',alignItems:'center',justifyContent:'center'}} onPress={()=>dispatch(deleteSet(item.name + ',' + set.setNum))}>
                                 <Image source={require('../../assets/x.png')} style={{width:10,height:10}}></Image>
-                            </TouchableOpacity>
-                        </View>
-                        <View style={styles.inputBox}>
-                            <TouchableOpacity style={styles.record} onPress={()=>{dispatch(updateRecordedStatus(item.name + ':' + set.setNum + ':' + set.recorded))}}>
-                            {set.recorded 
-                                ? <Image source={require('../../assets/checkedBoxless.png')} style={styles.checkedBoxlessStyle} /> 
-                                : null}                           
                             </TouchableOpacity>
                         </View>
                     </View>
@@ -148,15 +136,6 @@ const styles = StyleSheet.create({
         height:63,
         flexDirection:'row',
         justifyContent:'space-evenly',
-        alignItems:'center'
-    },
-    record:{
-        width:20,
-        height:20,
-        borderWidth:1,
-        borderColor:'#000000',
-        backgroundColor:'#FFFFFF',
-        justifyContent:'center',
         alignItems:'center'
     },
     categoryStyles:{

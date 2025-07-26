@@ -422,4 +422,28 @@ export function correctedDate(date:string):Date{
     correctDate.setDate(correctDate.getDate()+1)
     return correctDate
 }
+
+export async function getUserMaxes(userId:string,setMySets:(input:[string,{lbs:number,reps:number}[]][])=>void){
+    const sets:setReturn[] = await getSets(userId)
+    const map:Map<string,{lbs:number,reps:number}[]> = new Map()
+    sets.forEach(set=>{
+        if(!map.has(set.exercise)){
+            map.set(set.exercise,[{lbs:set.lbs,reps:set.reps}])
+        } else {
+            const exerciseSets:{lbs:number,reps:number}[] = map.get(set.exercise) ?? []
+            const existingSets = map.get(set.exercise);
+            const index = exerciseSets?.findIndex(aSet=>aSet.lbs === set.lbs)
+            if(index !== -1){
+                if(exerciseSets[index].reps < set.reps){
+                    if (existingSets){
+                        existingSets[index] = {lbs:set.lbs,reps:set.reps}
+                    }
+                }
+            } else {
+                existingSets?.push({lbs:set.lbs,reps:set.reps})
+            }
+        }
+    })
+    setMySets(Array.from(map))
+}
   

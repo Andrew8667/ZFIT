@@ -18,55 +18,37 @@ import { useEffect } from "react";
  * @returns list of exercises and their sets on myexercises screen
  */
 const MyExerciseList = function MyExerciseList({
-  myExercises,
-  setMyExercises,
+  mySets,
 }: {
-  myExercises: myExercises[];
-  setMyExercises: (input: myExercises[]) => void;
+  mySets: [string, { lbs: number; reps: number }[]][];
 }) {
   return (
     <ScrollView style={styles.container}>
-      {myExercises.map((exercise,index) => {
+      {mySets.map((exercise, index) => {
         return (
           <View key={index.toString()} style={styles.exerciseContainer}>
             <CustomText
-              text={exercise.name}
+              text={exercise[0]}
               textStyle={styles.exerciseName}
             ></CustomText>
-            {exercise.recordedSets.map((set,index) => {
-              const data =
-                "lbs: " +
-                set.lbs +
-                " reps: " +
-                set.reps +
-                "\nCreated on: " +
-                new Date(set.created_at).toLocaleDateString() +
-                " " +
-                new Date(set.created_at).toLocaleTimeString();
-              return (
-                <View style={styles.datacontainer} key={index.toString()}>
+            <View style={styles.datacontainer} key={index.toString()}>
+              {exercise[1].map((set) => (
+                <View key={set.lbs} style={{flexDirection:'row',width:'100%'}}>
                   <Image
                     source={require("../../assets/bluediamond.png")}
                     style={{ width: 20, height: 20, marginRight: 10 }}
                   ></Image>
                   <CustomText
-                    text={data}
-                    textStyle={{ color: "#FFFFFF", fontSize: 14, width: "85%" }}
-                  ></CustomText>
-                  <TouchableOpacity
-                    style={{ width: 20, height: 20 }}
-                    onPress={() => {
-                      setRecorded(set.setid, false);
+                    text={`Weight: ${set.lbs} Reps: ${set.reps}`}
+                    textStyle={{
+                      color: "#FFFFFF",
+                      fontSize: 14,
+                      width: "100%",
                     }}
-                  >
-                    <Image
-                      source={require("../../assets/trash.png")}
-                      style={{ width: 20, height: 20 }}
-                    ></Image>
-                  </TouchableOpacity>
+                  ></CustomText>
                 </View>
-              );
-            })}
+              ))}
+            </View>
           </View>
         );
       })}
@@ -78,8 +60,8 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     padding: 10,
-    height: '80%',
-    marginBottom:100
+    height: "80%",
+    marginBottom: 100,
   },
   exerciseContainer: {
     width: "100%",
@@ -90,8 +72,9 @@ const styles = StyleSheet.create({
     fontSize: 20,
   },
   datacontainer: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
+    marginBottom: 20,
   },
 });
 

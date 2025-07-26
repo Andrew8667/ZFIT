@@ -6,10 +6,11 @@ import CustomText from '../components/CustomText'
 import MyExerciseList from '../components/MyExercisesList'
 import NavBar from '../components/NavBar'
 import { getExercises } from '../lib/sets'
-import { myExercises } from '../types/exercise'
+import { myExercises, setReturn } from '../types/exercise'
 import { supabase } from '../lib/supabase'
 import { shallowEqual } from 'react-redux'
 import { UserContext } from '../App'
+import { getUserMaxes } from '../utils/workoutHelpers'
 
 /**
  * Screen contains recorded sets
@@ -19,57 +20,16 @@ import { UserContext } from '../App'
  * @returns screen containing recorded sets
  */
 const Highlights = function Highlights({navigation}:{navigation:NavigationProp<any>}){
-    const [myExercises,setMyExercises] = useState<myExercises[]>([])
+    const [mySets,setMySets] = useState<[string,{lbs:number,reps:number}[]][]>([])//contains all of the users sets
     const userId = useContext(UserContext)
     
       useEffect(()=>{
-        getExercises(userId, setMyExercises)
-        const channel = supabase
-            .channel('set-channel')
-            .on(
-                'postgres_changes',
-                {
-                event: '*', 
-                schema: 'public',
-                table: 'set',
-                },
-                (payload) => {
-                console.log('Realtime payload:', payload);
-
-                if (payload.eventType === 'UPDATE') {
-                  setMyExercises(prevExercises =>
-                    prevExercises.flatMap(exercise => {
-                      if (exercise.name === payload.new.exercise) {
-                        const newRecordedSets = exercise.recordedSets?.filter(
-                          set => set.setid !== payload.new.setid
-                        )
-                  
-                        // If no sets left, exclude this exercise
-                        if (!newRecordedSets || newRecordedSets.length === 0) {
-                          return [] // remove this exercise
-                        }
-                  
-                        return [{ ...exercise, recordedSets: newRecordedSets }]
-                      }
-                  
-                      return [exercise] // keep other exercises unchanged
-                    })
-                  )
-                  
-                }
-                }
-            )
-            .subscribe();
-
-            // Cleanup on unmount
-            return () => {
-            supabase.removeChannel(channel);
-            };
+        getUserMaxes(userId,setMySets)
     },[])
     return(
         <Background>
             <CustomText text='My Exercises' textStyle={{color:'#FFFFFF',fontWeight:700,fontSize:50,marginLeft:20,marginTop:25}}></CustomText>
-            <MyExerciseList myExercises={myExercises} setMyExercises={setMyExercises}></MyExerciseList>
+            <MyExerciseList mySets={mySets}></MyExerciseList>
             <NavBar curScreen='highlights' navigation={navigation}></NavBar>
         </Background>
     )
