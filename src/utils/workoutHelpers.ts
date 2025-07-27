@@ -256,7 +256,7 @@ export async function getFullWorkouts(user:string,inprogress:boolean){
  * @returns a filtered workout list
  */
 export function filteredWorkouts(searchText:string,dateOrdering:string,durationRange:string,selectedMuscles:string[],unfilteredWorkouts:workoutSliceTypeWithId[]):(workoutSliceTypeWithId[]){
-    let sortedWorkouts = dateOrdering === 'Newest to Oldest'?[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date)):[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date)).reverse()//sorts by date
+    let sortedWorkouts = dateOrdering === 'Newest to Oldest'?[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date)).reverse():[...unfilteredWorkouts].sort((a,b)=>a.date.localeCompare(b.date))//sorts by date
     switch(durationRange){ //filter by duration
         case 'Under 30 minutes':
             sortedWorkouts = sortedWorkouts.filter(workout=>workout.duration<30)

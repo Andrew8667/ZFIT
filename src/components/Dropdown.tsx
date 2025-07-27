@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import DropDownPicker from "react-native-dropdown-picker";
 import { dropdownItem } from "../types/exercise";
+import { StyleSheet } from "react-native";
 
 /**
  * Dropdown for selecting items to filter by
@@ -24,6 +25,7 @@ const Dropdown = function Dropdown({
 }) {
   return (
     <DropDownPicker
+      style={styles.dropdown}
       multiple={false}
       open={open}
       value={selected}
@@ -38,7 +40,7 @@ const Dropdown = function Dropdown({
   );
 };
 
-const styles = {
+const styles = StyleSheet.create({
   dropdown: {
     fontFamily: "Inter",
     borderColor: "#e4e4e4",
@@ -47,6 +49,6 @@ const styles = {
     width: "90%",
     alignSelf: "center",
   },
-};
+})
 
 export default Dropdown;
