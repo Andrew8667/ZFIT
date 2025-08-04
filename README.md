@@ -52,7 +52,7 @@ You can run **ZFIT** on your mobile device or locally using the iOS Simulator:
 
 1. Download the **Expo Go** app from the [App Store].
 2. Scan the provided QR code
-![Scan to Run the App](./assets/ExpoQRCode.png)
+![Scan to Run the App](./assets/QRCode.png)
 ### Option 2: Run on iOS Simulator (Mac Only, Xcode Required)
 
 
