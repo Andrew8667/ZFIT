@@ -30,6 +30,7 @@ const UserInfo = function UserInfo({email,password,loading,setEmail,setPassword,
                     <TextInput
                     value={password}
                     placeholder='Password'
+                    secureTextEntry={true}
                     onChangeText={(input)=>{setPassword(input)}}
                     style={styles.input}
                     placeholderTextColor='#FFFFFF'>
