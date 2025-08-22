@@ -48,7 +48,13 @@ import { NavigationProp } from "@react-navigation/native";
  * @param param0 navigation to the other screens
  * @returns the create screen
  */
-const Create = function Create({ navigation,route }: { navigation: NavigationProp<any>,route:any }) {
+const Create = function Create({
+  navigation,
+  route,
+}: {
+  navigation: NavigationProp<any>;
+  route: any;
+}) {
   const [exerciseList, setExerciseList] = useState<exercise[]>([]); //contains info that was fetched from exercises.json
   const [searchText, setSearchText] = useState(""); //keeps track of text in search bar
   const [filterModalVisible, setFilterModalVisible] = useState(false); //visibility of filter modal
@@ -60,7 +66,7 @@ const Create = function Create({ navigation,route }: { navigation: NavigationPro
   const [workouts, setWorkouts] = useState<workoutSliceTypeWithId[]>([]); //holds the in progress workouts
   const [successModalVisible, setSuccessModalVisible] = useState(false); //visibility of filter modal
   const userId = useContext(UserContext);
-  const status = route?.params?.status ?? 'fail'
+  const status = route?.params?.status ?? "fail";
 
   useEffect(() => {
     //populates the exercise list when screen loads
@@ -69,88 +75,111 @@ const Create = function Create({ navigation,route }: { navigation: NavigationPro
       setWorkouts(await getFullWorkouts(userId, true));
     }
     loadData();
-    if(status === 'success'){
-        setSuccessModalVisible(true)
+    if (status === "success") {
+      setSuccessModalVisible(true);
     } else {
-        setSuccessModalVisible(false)
+      setSuccessModalVisible(false);
     }
   }, []);
 
   useEffect(() => {
     setItems(getMusclesList(exerciseList)); ///getMusclesList returns {label:string,value:string}[] to populate the dropdown
   }, [exerciseList]);
-  
+
   return (
     <Background>
-        <CustomModal modalVisible={filterModalVisible}> 
-       <WorkoutFilter
-         setFilterModalVisible={setFilterModalVisible}
-         dateOrdering={dateOrdering}
-         setDateOrdering={setDateOrdering}
-         durationRange={durationRange}
-         setDurationRange={setDurationRange}
-         selectedMuscles={selectedMuscles}
-         setSelectedMuscles={setSelectedMuscles}
-         open={open}
-         setOpen={setOpen}
-         items={items}
-         setItems={setItems}
-       ></WorkoutFilter>
-     </CustomModal>
-     <CustomText
-       text="Create"
-       textStyle={{
-         color: "#FFFFFF",
-         fontWeight: '700',
-         fontSize: 50,
-         marginLeft: 20,
-         marginTop: 25,
-       }}
-     ></CustomText>
-     <CustomButton
-       text="Create New Workout"
-       extraBtnDesign={{
-         backgroundColor: "#f57c00",
-         width: 200,
-         height: 50,
-         borderRadius: 10,
-         alignSelf: "center",
-         marginTop: 20,
-       }}
-       extraTxtDesign={{ fontSize: 14, fontWeight: 500 }}
-       action={() => navigation.navigate("MyWorkout")}
-     ></CustomButton>
-    <Search
-       setSearchText={setSearchText}
-       searchText={searchText}
-       action={setFilterModalVisible}
-       extraStyle={{ marginTop: 20 }}
-     ></Search>
-     <StoredWorkouts
-       navigation={navigation}
-       isHorizontal={false}
-       type="inprogress"
-       workouts={filteredWorkouts(
-         searchText,
-         dateOrdering,
-         durationRange,
-         selectedMuscles,
-         workouts
-       )}
-       containerStyle={{
-         width: "100%",
-         height: 550,
-         marginTop: 10,
-         justifyContent: "center",
-       }}
-     ></StoredWorkouts>
-     <CustomModal modalVisible={successModalVisible}>
-       <SuccessfulCreation setSuccessModalVisible={setSuccessModalVisible}></SuccessfulCreation>
-     </CustomModal>
-     <NavBar navigation={navigation} curScreen="create"></NavBar>
+      <CustomModal modalVisible={filterModalVisible}>
+        <WorkoutFilter
+          setFilterModalVisible={setFilterModalVisible}
+          dateOrdering={dateOrdering}
+          setDateOrdering={setDateOrdering}
+          durationRange={durationRange}
+          setDurationRange={setDurationRange}
+          selectedMuscles={selectedMuscles}
+          setSelectedMuscles={setSelectedMuscles}
+          open={open}
+          setOpen={setOpen}
+          items={items}
+          setItems={setItems}
+        ></WorkoutFilter>
+      </CustomModal>
+      <CustomText
+        text="Create"
+        textStyle={{
+          color: "#FFFFFF",
+          fontWeight: "700",
+          fontSize: 50,
+          marginLeft: 20,
+          marginTop: 25,
+        }}
+      ></CustomText>
+      <View
+        style={{
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: "space-evenly",
+          alignItems: "center",
+        }}
+      >
+        <CustomButton
+          text="New Workout"
+          extraBtnDesign={{
+            backgroundColor: "#f57c00",
+            width: 150,
+            height: 50,
+            borderRadius: 10,
+            alignSelf: "center",
+            marginTop: 20,
+          }}
+          extraTxtDesign={{ fontSize: 14, fontWeight: 500 }}
+          action={() => navigation.navigate("MyWorkout")}
+        ></CustomButton>
+        <CustomButton
+          text="Program"
+          extraBtnDesign={{
+            backgroundColor: "#4CAF50",
+            width: 150,
+            height: 50,
+            borderRadius: 10,
+            alignSelf: "center",
+            marginTop: 20,
+          }}
+          extraTxtDesign={{ fontSize: 14, fontWeight: 500 }}
+          action={() => navigation.navigate("CreateProgram")}
+        ></CustomButton>
+      </View>
+      <Search
+        setSearchText={setSearchText}
+        searchText={searchText}
+        action={setFilterModalVisible}
+        extraStyle={{ marginTop: 20 }}
+      ></Search>
+      <StoredWorkouts
+        navigation={navigation}
+        isHorizontal={false}
+        type="inprogress"
+        workouts={filteredWorkouts(
+          searchText,
+          dateOrdering,
+          durationRange,
+          selectedMuscles,
+          workouts
+        )}
+        containerStyle={{
+          width: "100%",
+          height: 550,
+          marginTop: 10,
+          justifyContent: "center",
+        }}
+      ></StoredWorkouts>
+      <CustomModal modalVisible={successModalVisible}>
+        <SuccessfulCreation
+          setSuccessModalVisible={setSuccessModalVisible}
+        ></SuccessfulCreation>
+      </CustomModal>
+      <NavBar navigation={navigation} curScreen="create"></NavBar>
     </Background>
-    );
+  );
 };
-
 
 export default Create;

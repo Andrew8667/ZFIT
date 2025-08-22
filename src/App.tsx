@@ -16,6 +16,7 @@ import Highlights from "./screens/Highlights";
 import { Provider } from "react-redux";
 import { store } from "./store/store";
 import MyWorkout from "./screens/MyWorkout";
+import CreateProgram from "./screens/CreateProgram";
 import { createContext } from "react";
 
 const Stack = createNativeStackNavigator();
@@ -43,7 +44,7 @@ export default function App() {
     <UserContext.Provider value={userId}>
       <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="Login">
+          <Stack.Navigator initialRouteName="CreateProgram">
             <Stack.Screen
               name="Login"
               component={Login}
@@ -87,6 +88,11 @@ export default function App() {
             <Stack.Screen
               name="Highlights"
               component={Highlights}
+              options={{ headerShown: false, animation: "none" }}
+            />
+            <Stack.Screen
+              name="CreateProgram"
+              component={CreateProgram}
               options={{ headerShown: false, animation: "none" }}
             />
           </Stack.Navigator>
