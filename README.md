@@ -58,10 +58,10 @@ You can run **ZFIT** on your mobile device or locally using the iOS Simulator:
 
 1. Download and unzip the project ZIP file.
 2. Open the unzipped folder in your preferred terminal or code editor.
-3. Run the following commands inside the project folder:
+3. Run the following commands inside the project folder(Note: Must have node installed to run npm install! I use v24.4.0):
    ```bash
    npm install
-   npx expo start```
+   npx expo start
 
 
 ## Challenges & Learnings
