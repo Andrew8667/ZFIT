@@ -8,6 +8,7 @@ import {
   Image,
   TextInput,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { useEffect, useState } from "react";
 import Background from "../components/Background";
@@ -15,10 +16,18 @@ import CustomText from "../components/CustomText";
 import CustomButton from "../components/CustomButton";
 import { NavigationProp } from "@react-navigation/native";
 import Dropdown from "../components/Dropdown";
-import { dropdownItem } from "../types/exercise";
+import { dropdownItem, workoutPlanItem } from "../types/exercise";
 import DropDownPicker from "react-native-dropdown-picker";
 import { getEquipment } from "../utils/workoutHelpers";
+import CustomModal from "../components/CustomModal";
+import DateTimePicker from "@react-native-community/datetimepicker";
+import axios from "axios";
 
+/**
+ * Creates customized workout programs based on user input
+ * @param param0 contains naviagation to other screens
+ * @returns screen that manages the creation of custom workout programs
+ */
 const CreateProgram = function CreateProgram({
   navigation,
 }: {
@@ -57,20 +66,7 @@ const CreateProgram = function CreateProgram({
       label: "expert",
     },
   ]); //possible experience levels to choose from: beginner, intermediate, expert
-  const [goalOpen, setGoalOpen] = useState<boolean>(false); //the open state of the drop down containing possible goals
   const [goal, setGoal] = useState<string>(""); // the fitness goal of the user
-  const [goals, setGoals] = useState<dropdownItem[]>([
-    {
-      value: "Strength",
-      label: "Strength",
-    },
-    {
-      value: "Hypertrophy",
-      label: "Hypertrophy",
-    },
-  ]); //the options to choose from for goals
-  const [musclegroups, setMusclegroups] = useState<string>(""); //string of muscle groups user wants to focus on
-  const [lifts, setLifts] = useState<string>(""); //string of lifts that the user wants to prioritize
   const [daysOpen, setDaysOpen] = useState<boolean>(false); //the open state of the modal containing days of the week
   const [selectedDays, setSelectedDays] = useState<string[]>([]); //selected days of the week the user wants to do program
   const [days, setDays] = useState<dropdownItem[]>([
@@ -82,40 +78,71 @@ const CreateProgram = function CreateProgram({
     { value: "Saturday", label: "Saturday" },
     { value: "Sunday", label: "Sunday" },
   ]); //possible days to choose from
-  const [durationOrderingDropdownOpen, setDurationOrderingDropdownOpen] =
-    useState(false); //the visibility of the duration ordering dropdow
-  const [durationOptions, setDurationOptions] = useState<dropdownItem[]>([
+  const [equipmentOpen, setEquipmentOpen] = useState<boolean>(false); //the open state of the dropdown for equipment options
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]); //list of equipment that the user has
+  const [equipment, setEquipment] = useState<dropdownItem[]>([
     { value: "Any", label: "Any" },
-    { value: "Under 30 minutes", label: "Under 30 minutes" },
-    { value: "30-60 minutes", label: "30-60 minutes" },
-    { value: "Over 60 minutes", label: "Over 60 minutes" },
-  ]); //options to choose from duration
-  const [durationRange, setDurationRange] = useState<string>(""); //the duration range that users want their workouts to be
-  const [lengthOpen, setLengthOpen] = useState(false); //the visibility of the length dropdown
-  const [lengthOptions, setLengthOptions] = useState<dropdownItem[]>([]); //options to choose from for length of program
-  const [length, setLength] = useState<string>(""); //the length of program in weeks that users want their workouts to be
-  const [equipmentOpen,setEquipmentOpen] = useState<boolean>(false);//the open state of the dropdown for equipment options
-  const [selectedEquipment,setSelectedEquipment] = useState<string[]>([]);//list of equipment that the user has
-  const [equipment,setEquipment] = useState<dropdownItem[]>([
-    {value:'Any',label:'Any'},
-    {value:'body only',label:'body only'},
-    {value:'machine',label:'machine'},
-    {value:'foam roll',label:'foam roll'},
-    {value:'kettlebells',label:'kettlebells'},
-    {value:'dumbbells',label:'dumbbells'},
-    {value:'cable',label:'cable'},
-    {value:'barbell',label:'barbell'},
-    {value:'bands',label:'bands'},
-    {value:'medicine ball',label:'medicine ball'},
-    {value:'exercise ball',label:'exercise ball'},
-    {value:'e-z curl bar',label:'e-z curl bar'},
-  ]);//list of possible equipment to choose from
+    { value: "body only", label: "body only" },
+    { value: "machine", label: "machine" },
+    { value: "foam roll", label: "foam roll" },
+    { value: "kettlebells", label: "kettlebells" },
+    { value: "dumbbells", label: "dumbbells" },
+    { value: "cable", label: "cable" },
+    { value: "barbell", label: "barbell" },
+    { value: "bands", label: "bands" },
+    { value: "medicine ball", label: "medicine ball" },
+    { value: "exercise ball", label: "exercise ball" },
+    { value: "e-z curl bar", label: "e-z curl bar" },
+  ]); //list of possible equipment to choose from
+  const [missingFieldsModal, setMissingFieldsModal] = useState<boolean>(false); //visibilty of modal containing feedback on whether or not there is missing fields
+  const [date, setDate] = useState<Date>(new Date()); // date of today
+  const [workoutPlan, setWorkoutPlan] = useState<workoutPlanItem[]>([]); //contains info for the generated workout plan
+  const [loading, setLoading] = useState<boolean>(true); //the loading state of generating custom workout
+  const [changes, setChanges] = useState<string>(""); //the updates the user wants to make to the program
+
   /**
    * Used to go to next step of questioning
    */
   const handleContinue = () => {
-    setStage((prev) => prev + 1);
+    switch (stage) {
+      case 1:
+        if (age !== "" && gender !== "" && level !== "") {
+          setStage((prev) => prev + 1);
+        } else {
+          setMissingFieldsModal(true);
+        }
+        break;
+      case 2:
+        if (goal !== "") {
+          setStage((prev) => prev + 1);
+        } else {
+          setMissingFieldsModal(true);
+        }
+        break;
+      case 3:
+        if (selectedDays.length !== 0) {
+          setStage((prev) => prev + 1);
+        } else {
+          setMissingFieldsModal(true);
+        }
+        break;
+    }
   };
+
+  /**
+   * Saves the workouts in the program to in progress
+   */
+  const handleSave = ()=>{
+    axios
+        .post("http://127.0.0.1:5000/insertProgram", workoutPlan)
+        .then((response) => {
+          console.log(response.data)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    navigation.navigate('Create')
+  }
 
   /**
    * Goes back to the previous question
@@ -123,6 +150,57 @@ const CreateProgram = function CreateProgram({
   const handlePrev = () => {
     setStage((prev) => prev - 1);
   };
+
+  /**
+   * Updates the workout plan based on the changes the user makes
+   */
+  const handleChange = ()=>{
+    axios
+        .post("http://127.0.0.1:5000/updateProgram", [workoutPlan,changes])
+        .then((response) => {
+          console.log(response.data)
+          setWorkoutPlan(response.data)
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } 
+
+  /**
+   * Gives the API the results of the assessment to send to /generateProgram endpoint in the backend
+   * API returns a custom workout program
+   */
+  const handleSubmit = () => {
+    if (selectedEquipment.length !== 0) {
+      const user_data = {
+        age: age,
+        gender: gender,
+        level: level,
+        goal: goal,
+        days: selectedDays,
+        startdate: date,
+        equipment: selectedEquipment,
+      };
+      axios
+        .post("http://127.0.0.1:5000/generateProgram", user_data)
+        .then((response) => {
+          setWorkoutPlan(response.data);
+          setStage((prev) => prev + 1);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    } else {
+      setMissingFieldsModal(true);
+    }
+  };
+
+  /**
+   * Sets the screen to loading while new program is being generated
+   */
+  useEffect(() => {
+    setLoading(false);
+  }, [workoutPlan]);
 
   /**
    * Populates drop down options for age and length of program
@@ -136,15 +214,6 @@ const CreateProgram = function CreateProgram({
       });
     }
     setAges(ages);
-
-    const lengthOptions = [];
-    for (let i = 1; i <= 12; i++) {
-      lengthOptions.push({
-        value: i.toString(),
-        label: i.toString(),
-      });
-    }
-    setLengthOptions(lengthOptions);
   }, []);
 
   return (
@@ -162,15 +231,20 @@ const CreateProgram = function CreateProgram({
 
       <View style={{ height: "80%" }}>
         <CustomText
-          text={"Part " + stage.toString() + " of " + numOfParts}
+          text={
+            stage === 5
+              ? "Results"
+              : "Part " + stage.toString() + " of " + numOfParts
+          }
           textStyle={{
             color: "#FFFFFF",
-            fontSize: 16,
+            fontSize: 20,
             fontWeight: 600,
             marginLeft: 45,
             marginRight: 10,
           }}
         ></CustomText>
+
         {stage === 1 && (
           <View
             style={{
@@ -247,43 +321,30 @@ const CreateProgram = function CreateProgram({
             }}
           >
             <View style={styles.filterItemContainer}>
-              <CustomText
-                text="Goal"
-                textStyle={{
-                  fontSize: 20,
-                  fontWeight: 600,
-                  alignSelf: "center",
-                  color: "#FFFFFF",
-                }}
-              ></CustomText>
-              <Dropdown
-                open={goalOpen}
-                setOpen={setGoalOpen}
-                selected={goal}
-                setSelected={setGoal}
-                items={goals}
-                setItems={setGoals}
-              ></Dropdown>
-              {goal !== "" && (
+              <View>
+                <CustomText
+                  text="Briefly describe your workout goal"
+                  textStyle={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    alignSelf: "center",
+                    color: "#FFFFFF",
+                  }}
+                ></CustomText>
                 <View style={styles.notesContainer}>
                   <TextInput
-                    value={goal === "Hypertrophy" ? musclegroups : lifts}
+                    value={goal}
                     onChangeText={(text) => {
-                      goal === "Hypertrophy"
-                        ? setMusclegroups(text)
-                        : setLifts(text);
+                      setGoal(text);
                     }}
                     style={styles.notes}
                     multiline={true}
-                    placeholder={
-                      goal === "Hypertrophy"
-                        ? "List the muscle groups you'd like to focus on"
-                        : "List the lifts you'd like to improve"
-                    }
+                    maxLength={150}
+                    placeholder="Ex: My goal is to get stronger in the bench press(max characters: 150)"
                     placeholderTextColor={"#696969d"}
                   ></TextInput>
                 </View>
-              )}
+              </View>
             </View>
           </View>
         )}
@@ -322,7 +383,7 @@ const CreateProgram = function CreateProgram({
             </View>
             <View style={styles.filterItemContainer}>
               <CustomText
-                text="Duration"
+                text="Start Date"
                 textStyle={{
                   fontSize: 20,
                   fontWeight: 600,
@@ -330,33 +391,16 @@ const CreateProgram = function CreateProgram({
                   color: "#FFFFFF",
                 }}
               ></CustomText>
-              <Dropdown
-                open={durationOrderingDropdownOpen}
-                setOpen={setDurationOrderingDropdownOpen}
-                selected={durationRange}
-                setSelected={setDurationRange}
-                items={durationOptions}
-                setItems={setDurationOptions}
-              ></Dropdown>
-            </View>
-            <View style={styles.filterItemContainer}>
-              <CustomText
-                text="Length of Program(weeks)"
-                textStyle={{
-                  fontSize: 20,
-                  fontWeight: 600,
-                  alignSelf: "center",
-                  color: "#FFFFFF",
+              <DateTimePicker
+                value={date}
+                mode="date"
+                display="default"
+                onChange={(event, selectedDate) => {
+                  const currentDate = selectedDate || date;
+                  setDate(currentDate);
                 }}
-              ></CustomText>
-              <Dropdown
-                open={lengthOpen}
-                setOpen={setLengthOpen}
-                selected={length}
-                setSelected={setLength}
-                items={lengthOptions}
-                setItems={setLengthOptions}
-              ></Dropdown>
+                style={{ alignSelf: "center" }}
+              />
             </View>
           </View>
         )}
@@ -393,6 +437,104 @@ const CreateProgram = function CreateProgram({
                 }}
               />
             </View>
+          </View>
+        )}
+
+        <ScrollView>
+          {stage === 5 &&
+            workoutPlan.map((workout) => (
+              <View key={workout.date} style={{ justifyContent: "center" }}>
+                <CustomText
+                  text={"Title: " + workout.title}
+                  textStyle={{
+                    fontSize: 16,
+                    fontWeight: 600,
+                    alignSelf: "center",
+                    color: "#FFFFFF",
+                  }}
+                ></CustomText>
+                <CustomText
+                  text={"Date: " + workout.date}
+                  textStyle={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    alignSelf: "center",
+                    color: "#FFFFFF",
+                  }}
+                ></CustomText>
+                <CustomText
+                  text={
+                    "Muscle Groups Trained: " + workout.musclegroups.join(", ")
+                  }
+                  textStyle={{
+                    fontSize: 14,
+                    fontWeight: 600,
+                    alignSelf: "center",
+                    color: "#FFFFFF",
+                  }}
+                ></CustomText>
+                <CustomText
+                  text={
+                    "Sets:\n " +
+                    workout.sets.map(
+                      (set) =>
+                        "-Exercise: " +
+                        set.exercise +
+                        ", Set: " +
+                        set.set_num +
+                        ", Lbs: " +
+                        set.lbs +
+                        ", Reps: " +
+                        set.reps +
+                        "\n"
+                    )
+                  }
+                  textStyle={{
+                    fontSize: 13,
+                    fontWeight: 600,
+                    alignSelf: "center",
+                    color: "#FFFFFF",
+                  }}
+                ></CustomText>
+                <TextInput></TextInput>
+              </View>
+            ))}
+        </ScrollView>
+        {stage === 5 && workoutPlan.length != 0 && (
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
+          >
+            <View style={styles.notesContainer}>
+              <TextInput
+                value={changes}
+                onChangeText={(text) => {
+                  setChanges(text);
+                }}
+                style={styles.notes}
+                multiline={true}
+                maxLength={255}
+                placeholder="Ex: Replace all instances of barbell bench press with an alternative exercise using dumbbells"
+                placeholderTextColor={"#696969d"}
+              ></TextInput>
+            </View>
+            <CustomButton
+              text="Enter"
+              extraBtnDesign={{
+                backgroundColor: "#f57c00",
+                width: 120,
+                height: 35,
+                borderRadius: 10,
+              }}
+              extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
+              action={() => {
+                handleChange()
+              }}
+            ></CustomButton>
           </View>
         )}
       </View>
@@ -436,7 +578,7 @@ const CreateProgram = function CreateProgram({
           ></CustomButton>
         )}
         <CustomButton
-          text={stage === 4? 'Submit':'Continue'}
+          text={stage === 4 ? "Generate" : stage === 5 ? "Save" : "Continue"}
           extraBtnDesign={{
             backgroundColor: "#4CAF50",
             width: 120,
@@ -445,10 +587,42 @@ const CreateProgram = function CreateProgram({
           }}
           extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
           action={() => {
-            handleContinue();
+            stage === 4 ? handleSubmit()  : (stage === 5? handleSave():handleContinue())
           }}
         ></CustomButton>
       </View>
+      <CustomModal modalVisible={missingFieldsModal}>
+        <View style={styles.backdrop}>
+          <View
+            style={{
+              backgroundColor: "#FFFFFF",
+              height: 100,
+              alignItems: "center",
+              justifyContent: "space-evenly",
+              width: "90%",
+              borderRadius: 10,
+            }}
+          >
+            <CustomText
+              text="Please fill in missing fields"
+              textStyle={{ color: "#2196F3", fontSize: 20, fontWeight: 600 }}
+            ></CustomText>
+            <CustomButton
+              text="Ok"
+              extraBtnDesign={{
+                backgroundColor: "#B2B2B2",
+                width: 120,
+                height: 35,
+                borderRadius: 10,
+              }}
+              extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
+              action={() => {
+                setMissingFieldsModal(false);
+              }}
+            ></CustomButton>
+          </View>
+        </View>
+      </CustomModal>
     </Background>
   );
 };
@@ -472,7 +646,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: "rgba(69,69,69,0.5)",
     width: "90%",
-    height: 200,
+    height: 100,
     alignSelf: "center",
     borderRadius: 10,
     marginTop: 10,
@@ -483,6 +657,12 @@ const styles = StyleSheet.create({
     width: "100%",
     height: "100%",
     textAlign: "left",
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(69,69,69,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 

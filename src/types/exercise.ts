@@ -136,3 +136,18 @@ export type dropdownItem={
     value:string,
     label:string
 }
+
+/**
+ * Workout plan item return format
+ */
+export type workoutPlanItem = {
+    date:string,
+    musclegroups:string[],
+    title:string,
+    sets:{
+        exercise:string,
+        set_num:any,
+        lbs:any,
+        reps:any
+    }[]
+}

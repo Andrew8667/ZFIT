@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Dimensions, Text, StyleSheet, Alert } from "react-native";
+import {
+  View,
+  Dimensions,
+  Text,
+  StyleSheet,
+  Alert,
+  ScrollView,
+  ImageBackgroundComponent,
+} from "react-native";
 import { LineChart } from "react-native-chart-kit";
 import { getExercises } from "../lib/sets";
 import { setReturn } from "../types/exercise";
@@ -9,6 +17,9 @@ import CustomText from "./CustomText";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { UserContext } from "../App";
 import DropDownPicker from "react-native-dropdown-picker";
+import CustomButton from "./CustomButton";
+import axios from "axios";
+import CustomModal from "./CustomModal";
 
 /**
  * Chart displays the week by week progress of an exercise on a specific day
@@ -28,6 +39,8 @@ export default function Chart() {
   const [selectedExercise, setSelectedExercise] = useState(""); //exercise to display info for
   const [open, setOpen] = useState(false); //dropdown is open or not
   const [items, setItems] = useState<{ label: string; value: string }[]>([]); //items in the dropdown picker
+  const [insightModal, setInsightModal] = useState<boolean>(false); //visibilty of modal containing exercise insights
+  const [insights, setInsights] = useState<any>(""); //insights for exercise
   const userId = useContext(UserContext);
 
   useEffect(() => {
@@ -42,13 +55,13 @@ export default function Chart() {
     );
   }, []);
 
-  useEffect(()=>{
+  useEffect(() => {
     setItems(
       uniqueExercises.map((exercise) => {
         return { label: exercise, value: exercise };
       })
     );
-  },[uniqueExercises])
+  }, [uniqueExercises]);
 
   useEffect(() => {
     getChartData(
@@ -60,6 +73,22 @@ export default function Chart() {
       setVolumeList
     );
   }, [selectedExercise, selectedMonth, selectedYear]); //everytime the user inputs something new, repopulate the chart data
+
+  /**
+   * Generates insights for the selected exercise
+   */
+  const generate_insights = () => {
+    axios
+      .get(`http://127.0.0.1:5000/getInsights/${selectedExercise}`)
+      .then((response) => {
+        setInsights(response.data);
+        setInsightModal(true);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const chartData = {
     //contains data from chart
@@ -166,23 +195,79 @@ export default function Chart() {
           textStyle={{
             color: "#FFFFFF",
             fontWeight: 500,
-            fontSize: 20,
+            fontSize: 16,
             marginLeft: 20,
             marginTop: 20,
             alignSelf: "center",
           }}
         ></CustomText>
-        <DropDownPicker
-          style={styles.dropdown}
-          multiple={false}
-          open={open}
-          value={selectedExercise}
-          items={items}
-          setOpen={setOpen}
-          setValue={setSelectedExercise}
-          setItems={setItems}
-        />
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "space-between",
+            height: "90%",
+          }}
+        >
+          <DropDownPicker
+            style={styles.dropdown}
+            multiple={false}
+            open={open}
+            value={selectedExercise}
+            items={items}
+            setOpen={setOpen}
+            setValue={setSelectedExercise}
+            setItems={setItems}
+          />
+          {selectedExercise && (
+            <CustomButton
+              text="Generate Insights"
+              extraBtnDesign={{
+                backgroundColor: "#f57c00",
+                flex: 1,
+                height: 20,
+              }}
+              extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
+              action={() => {
+                generate_insights();
+                console.log("test");
+              }}
+            ></CustomButton>
+          )}
+        </View>
       </View>
+      <CustomModal modalVisible={insightModal}>
+        <View style={styles.backdrop}>
+          <View style={styles.insightContainer}>
+            <CustomText
+              text={insights}
+              textStyle={{
+                color: "#000000",
+                fontWeight: 500,
+                fontSize: 12,
+                marginLeft: 20,
+                marginTop: 20,
+                alignSelf: "center",
+              }}
+            ></CustomText>
+          </View>
+          <CustomButton
+              text="Return"
+              extraBtnDesign={{
+                backgroundColor: "#f57c00",
+                position:'relative',
+                height: 30,
+                width:'20%',
+                bottom:'10%'
+              }}
+              extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
+              action={() => {
+                setInsightModal(false);
+              }}
+            ></CustomButton>
+        </View>
+      </CustomModal>
     </View>
   );
 }
@@ -199,9 +284,13 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   exerciseContainer: {
-    height: "100%",
+    height: "20%",
     marginTop: 80,
-    width: "100%",
+    width: "90%",
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
   },
   dateContainer: {
     height: "20%",
@@ -215,7 +304,20 @@ const styles = StyleSheet.create({
     borderColor: "#e4e4e4",
     color: "##e4e4e4",
     marginTop: 10,
-    width: "90%",
+    width: "60%",
     alignSelf: "center",
+  },
+  backdrop: {
+    flex: 1,
+    backgroundColor: "rgba(69,69,69,0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  insightContainer: {
+    backgroundColor: "#FFFFFF",
+    width: 400,
+    height: 650,
+    borderRadius: 10,
+    alignItems: "center",
   },
 });
