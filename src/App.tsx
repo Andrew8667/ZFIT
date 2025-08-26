@@ -44,7 +44,7 @@ export default function App() {
     <UserContext.Provider value={userId}>
       <Provider store={store}>
         <NavigationContainer>
-          <Stack.Navigator initialRouteName="CreateProgram">
+          <Stack.Navigator initialRouteName="Login">
             <Stack.Screen
               name="Login"
               component={Login}
