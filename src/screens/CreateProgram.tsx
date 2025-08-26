@@ -9,6 +9,7 @@ import {
   TextInput,
   TouchableOpacity,
   ScrollView,
+  TouchableWithoutFeedback,
 } from "react-native";
 import { useEffect, useState } from "react";
 import Background from "../components/Background";
@@ -22,6 +23,7 @@ import { getEquipment } from "../utils/workoutHelpers";
 import CustomModal from "../components/CustomModal";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import axios from "axios";
+import { Keyboard } from "react-native";
 
 /**
  * Creates customized workout programs based on user input
@@ -132,17 +134,17 @@ const CreateProgram = function CreateProgram({
   /**
    * Saves the workouts in the program to in progress
    */
-  const handleSave = ()=>{
+  const handleSave = () => {
     axios
-        .post("http://127.0.0.1:5000/insertProgram", workoutPlan)
-        .then((response) => {
-          console.log(response.data)
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    navigation.navigate('Create')
-  }
+      .post("http://127.0.0.1:5000/insertProgram", workoutPlan)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+    navigation.navigate("Create");
+  };
 
   /**
    * Goes back to the previous question
@@ -154,17 +156,17 @@ const CreateProgram = function CreateProgram({
   /**
    * Updates the workout plan based on the changes the user makes
    */
-  const handleChange = ()=>{
+  const handleChange = () => {
     axios
-        .post("http://127.0.0.1:5000/updateProgram", [workoutPlan,changes])
-        .then((response) => {
-          console.log(response.data)
-          setWorkoutPlan(response.data)
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    } 
+      .post("http://127.0.0.1:5000/updateProgram", [workoutPlan, changes])
+      .then((response) => {
+        console.log(response.data);
+        setWorkoutPlan(response.data);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   /**
    * Gives the API the results of the assessment to send to /generateProgram endpoint in the backend
@@ -320,32 +322,37 @@ const CreateProgram = function CreateProgram({
               justifyContent: "space-evenly",
             }}
           >
-            <View style={styles.filterItemContainer}>
-              <View>
-                <CustomText
-                  text="Briefly describe your workout goal"
-                  textStyle={{
-                    fontSize: 16,
-                    fontWeight: 600,
-                    alignSelf: "center",
-                    color: "#FFFFFF",
-                  }}
-                ></CustomText>
-                <View style={styles.notesContainer}>
-                  <TextInput
-                    value={goal}
-                    onChangeText={(text) => {
-                      setGoal(text);
+            <TouchableWithoutFeedback
+              onPress={Keyboard.dismiss}
+              accessible={false}
+            >
+              <View style={styles.filterItemContainer}>
+                <View>
+                  <CustomText
+                    text="Briefly describe your workout goal"
+                    textStyle={{
+                      fontSize: 16,
+                      fontWeight: 600,
+                      alignSelf: "center",
+                      color: "#FFFFFF",
                     }}
-                    style={styles.notes}
-                    multiline={true}
-                    maxLength={150}
-                    placeholder="Ex: My goal is to get stronger in the bench press(max characters: 150)"
-                    placeholderTextColor={"#696969d"}
-                  ></TextInput>
+                  ></CustomText>
+                  <View style={styles.notesContainer}>
+                    <TextInput
+                      value={goal}
+                      onChangeText={(text) => {
+                        setGoal(text);
+                      }}
+                      style={styles.notes}
+                      multiline={true}
+                      maxLength={150}
+                      placeholder="Ex: My goal is to get stronger in the bench press(max characters: 150)"
+                      placeholderTextColor={"#696969d"}
+                    ></TextInput>
+                  </View>
                 </View>
               </View>
-            </View>
+            </TouchableWithoutFeedback>
           </View>
         )}
 
@@ -509,19 +516,21 @@ const CreateProgram = function CreateProgram({
               alignItems: "center",
             }}
           >
-            <View style={styles.notesContainer}>
-              <TextInput
-                value={changes}
-                onChangeText={(text) => {
-                  setChanges(text);
-                }}
-                style={styles.notes}
-                multiline={true}
-                maxLength={255}
-                placeholder="Ex: Replace all instances of barbell bench press with an alternative exercise using dumbbells"
-                placeholderTextColor={"#696969d"}
-              ></TextInput>
-            </View>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss} accessible={false}>
+              <View style={styles.notesContainer}>
+                <TextInput
+                  value={changes}
+                  onChangeText={(text) => {
+                    setChanges(text);
+                  }}
+                  style={styles.notes}
+                  multiline={true}
+                  maxLength={255}
+                  placeholder="Ex: Replace all instances of barbell bench press with an alternative exercise using dumbbells"
+                  placeholderTextColor={"#696969d"}
+                ></TextInput>
+              </View>
+            </TouchableWithoutFeedback>
             <CustomButton
               text="Enter"
               extraBtnDesign={{
@@ -532,7 +541,7 @@ const CreateProgram = function CreateProgram({
               }}
               extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
               action={() => {
-                handleChange()
+                handleChange();
               }}
             ></CustomButton>
           </View>
@@ -587,7 +596,11 @@ const CreateProgram = function CreateProgram({
           }}
           extraTxtDesign={{ fontWeight: 700, fontSize: 14 }}
           action={() => {
-            stage === 4 ? handleSubmit()  : (stage === 5? handleSave():handleContinue())
+            stage === 4
+              ? handleSubmit()
+              : stage === 5
+              ? handleSave()
+              : handleContinue();
           }}
         ></CustomButton>
       </View>
