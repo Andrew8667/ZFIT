@@ -52,7 +52,7 @@ You can run **ZFIT** on your mobile device or locally using the iOS Simulator:
 
 1. Download the **Expo Go** app from the [App Store].
 2. Scan the provided QR code
-![Scan to Run the App](./assets/QRCode.png)
+![Scan to Run the App](./assets/ExpoQRCode.png)
 ### Option 2: Run on iOS Simulator (Mac Only, Xcode Required)
 
 
@@ -72,11 +72,11 @@ You can run **ZFIT** on your mobile device or locally using the iOS Simulator:
 - Faced challenges adapting layouts for various mobile screen sizes, which taught me to build responsive designs and test across different devices and simulators
 - Learned how Supabase Row Level Security (RLS) policies work, and implemented secure access rules to protect user data
 - Gained hands-on experience with SQL queries and database design, using ER diagrams and relational schemas to model workout and exercise data effectively
+- Learned how to use LLM's to automate processes such as workout planning and adding AI generated insights
 ## Future Improvements
 
 
 - Add more exercises across different difficulty levels, equipment types, and muscle groups to give users a broader selection
-- Implement a feature that automatically creates customized workouts based on user preferences like duration, goals, muscle groups, and available equipment
 - Prepare and publish the app to the iOS App Store and Google Play Store for broader access and visibility
 -  Improve layout and component scaling to ensure a consistent and user-friendly experience across a wider range of iOS and Android devices
 
