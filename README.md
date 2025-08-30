@@ -14,9 +14,10 @@ The goal is to make fitness tracking accessible to everyone by offering a simple
 
 ## Demo
 
-
-[Click here to watch the demo](https://youtu.be/98nS1DF1aLU) 
+[Click here to watch the demo](https://youtu.be/ZKUYFcBDdLQ) 
 *(A short video showcasing the app’s core features and usage)*
+[Click here to watch the demo](https://youtu.be/98nS1DF1aLU) 
+*(A video demonstrating the AI automated features using ZFIT_API with the mobile app)*
 
 
 ## Tech Stack
