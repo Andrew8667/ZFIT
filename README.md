@@ -3,9 +3,10 @@
 ## Introduction / Summary
 
 **ZFIT** is a full-stack mobile fitness app designed to help users reach their fitness goals.  
+
 The frontend is built with **React Native** and **TypeScript**, while the backend is powered by **Supabase** and a custom **Python/Flask API** integrated with **Pandas** for workout data processing and analytics.  
 
-I created this app to solve a common frustration with existing fitness apps: many lock essential features—like workout logging and progress tracking—behind paywalls, and often lack the functionality users actually need.  
+I created this app to solve a common frustration with existing fitness apps: many lack essential features, like workout logging and progress tracking, behind paywalls. They also often lack the functionality users actually need.  
 
 ZFIT empowers users to: Create personalized workouts, log exercises without limits, and monitor fitness progress over time with AI-driven insights  
 
@@ -54,11 +55,12 @@ Required Technologies
 - Visual Studio Code
 
 Step 1: Set Up the Backend (ZFIT_API)
-1. Find ZFIT_API my GitHub repository called ZFIT_API
+1. Find my GitHub repository called ZFIT_API 
 2. Download and unzip ZFIT_API
 3. Run ZFIT_API folder in Visual Studio Code
 4. From the ZFIT_API directory, install Python dependencies by running: pip3(or pip) install -r requirements.txt
 5. Start the backend server: python3(or python) app.py
+
 Note: Keep this terminal open while using the mobile app
 
 Step 2: Set Up the Front End (ZFIT)
@@ -85,15 +87,15 @@ generating insights may take up to one minute.
 
 ## Challenges & Learnings
 
-
+- One challenge was working with Ollama, LLaMA 3, and Flask, technologies I had little prior experience with. Through research and testing, I learned to build Flask endpoints and integrate the LLaMA 3 model, successfully enabling communication between the mobile app and Python backend.
+- Writing prompts for the LLM was a challenge, as initial outputs were often inaccurate. Through careful experimentation, I discovered that providing highly detailed instructions, which included specifying exactly what the output should and should not contain, significantly improved the model’s accuracy.
+- Integrating the frontend, backend, and database technologies into a cohesive system. I overcame this by mapping out a detailed data flow and creating a clear implementation plan
 - Designed the front end with Figma to plan layouts and user flow before development, helping ensure a clean and intuitive UI
 - Worked with Redux Toolkit, TypeScript, React Native, and Supabase for the first time, gaining full-stack mobile development experience
 - Faced challenges adapting layouts for various mobile screen sizes, which taught me to build responsive designs and test across different devices and simulators
 - Learned how Supabase Row Level Security (RLS) policies work, and implemented secure access rules to protect user data
 - Gained hands-on experience with SQL queries and database design, using ER diagrams and relational schemas to model workout and exercise data effectively
-- One challenge was working with Ollama, LLaMA 3, and Flask, technologies I had little prior experience with. Through research and testing, I learned to build Flask endpoints and integrate the LLaMA 3 model, successfully enabling communication between the mobile app and Python backend.
-- Writing prompts for the LLM was a challenge, as initial outputs were ofteninaccurate. Through careful experimentation, I discovered that providing highly detailed instructions, which included specifying exactly what the output should and should not contain, significantly improved the model’s accuracy.
-- Integrating the frontend, backend, and database technologies into a cohesive system. I overcame this by mapping out a detailed data flow and creating a clear implementation plan
+
 ## Future Improvements
 
 
