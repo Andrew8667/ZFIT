@@ -6,7 +6,9 @@
 
 The frontend is built with **React Native** and **TypeScript**, while the backend is powered by **Supabase** and a custom **Python/Flask API** integrated with **Pandas** for workout data processing and analytics.  
 
-I created this app to solve a common frustration with existing fitness apps: many lack essential features, like workout logging and progress tracking, behind paywalls. They also often lack the functionality users actually need.  
+I created this app to address common frustrations with existing fitness apps, such as: 
+- Missing essential features like workout logging and progress tracking
+- Locking core functionality behind paywalls
 
 ZFIT empowers users to: Create personalized workouts, log exercises without limits, and monitor fitness progress over time with AI-driven insights  
 
